@@ -182,6 +182,7 @@ model User {
   passwordHash           Bytes             @db.Binary(64)
   passwordSalt           Bytes             @db.Binary(64)
   avatarUrl              String?           @db.NVarChar(256)
+  roleId                 Int               @db.SmallInt
   complaintAnswers       ComplaintAnswer[]
   complaintantComplaints Complaint[]       @relation("Complaints_ComplainantIdToUsers")
   accusedComplaints      Complaint[]       @relation("Complaints_AccusedIdToUsers")
@@ -193,7 +194,16 @@ model User {
   punishedPenalties      Penalty[]         @relation("Penalties_PunishedUserIdToUsers")
   sections               Section[]
   topics                 Topic[]
+  role                   Role              @relation(fields: [roleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Users_Roles")
 
   @@index([email], map: "IX_Users_Email")
   @@map("Users")
+}
+
+model Role {
+  id    Int    @id(map: "PK_Roles") @db.SmallInt
+  name  String @db.VarChar(50)
+  users User[]
+
+  @@map("Roles")
 }
