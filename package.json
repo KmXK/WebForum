@@ -1,10 +1,18 @@
 {
-  "name": "WebForum",
+  "name": "webforum",
   "version": "1.0.0",
   "description": "MPP - Laboratory Work",
   "main": "index.js",
   "repository": "https://github.com/KmXK/WebForum",
   "author": "KmXK",
   "license": "MIT",
-  "private": false
+  "private": false,
+  "scripts": {
+    "dev": "run-p dev:client dev:server",
+    "dev:client": "cd FrontEnd && yarn dev",
+    "dev:server": "cd BackEnd && yarn run start:dev"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
+  }
 }
