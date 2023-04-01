@@ -1,0 +1,10 @@
+{
+  "name": "WebForum",
+  "version": "1.0.0",
+  "description": "MPP - Laboratory Work",
+  "main": "index.js",
+  "repository": "https://github.com/KmXK/WebForum",
+  "author": "KmXK",
+  "license": "MIT",
+  "private": false
+}
