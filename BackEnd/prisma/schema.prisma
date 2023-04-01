@@ -8,192 +8,192 @@ datasource db {
 }
 
 model ComplaintAnswer {
-  Id           String    @id(map: "PK_ComplaintAnswers") @db.UniqueIdentifier
-  ResponderId  String    @db.UniqueIdentifier
-  CompaintId   String    @db.UniqueIdentifier
-  Text         String    @db.NVarChar(1024)
-  ResponseTime DateTime  @db.DateTime
-  Complaint    Complaint @relation(fields: [CompaintId], references: [Id], onUpdate: NoAction, map: "FK_ComplaintAnswers_Complaints")
-  Responser    User      @relation(fields: [ResponderId], references: [Id], onUpdate: NoAction, map: "FK_ComplaintAnswers_Users")
+  id           String    @id(map: "PK_ComplaintAnswers") @db.UniqueIdentifier
+  responderId  String    @db.UniqueIdentifier
+  compaintId   String    @db.UniqueIdentifier
+  text         String    @db.NVarChar(1024)
+  responseTime DateTime  @db.DateTime
+  complaint    Complaint @relation(fields: [compaintId], references: [id], onUpdate: NoAction, map: "FK_ComplaintAnswers_Complaints")
+  responser    User      @relation(fields: [responderId], references: [id], onUpdate: NoAction, map: "FK_ComplaintAnswers_Users")
 
   @@map("ComplaintAnswers")
 }
 
 model Complaint {
-  Id            String            @id(map: "PK_Complaints") @db.UniqueIdentifier
-  ComplainantId String            @db.UniqueIdentifier
-  AccusedId     String            @db.UniqueIdentifier
-  Description   String            @db.NVarChar(1024)
-  MessageId     String?           @db.UniqueIdentifier
-  Answers       ComplaintAnswer[]
-  Message       Message?          @relation(fields: [MessageId], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Complaints_Messages")
-  Complaintant  User              @relation("Complaints_ComplainantIdToUsers", fields: [ComplainantId], references: [Id], onUpdate: NoAction, map: "FK_Complaints_Users_ComplaintantId")
-  AccusedUser   User              @relation("Complaints_AccusedIdToUsers", fields: [AccusedId], references: [Id], onUpdate: NoAction, map: "FK_Complaints_Users_AccusedId")
+  id            String            @id(map: "PK_Complaints") @db.UniqueIdentifier
+  complainantId String            @db.UniqueIdentifier
+  accusedId     String            @db.UniqueIdentifier
+  description   String            @db.NVarChar(1024)
+  messageId     String?           @db.UniqueIdentifier
+  answers       ComplaintAnswer[]
+  message       Message?          @relation(fields: [messageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Complaints_Messages")
+  complaintant  User              @relation("Complaints_ComplainantIdToUsers", fields: [complainantId], references: [id], onUpdate: NoAction, map: "FK_Complaints_Users_ComplaintantId")
+  accusedUser   User              @relation("Complaints_AccusedIdToUsers", fields: [accusedId], references: [id], onUpdate: NoAction, map: "FK_Complaints_Users_AccusedId")
 
   @@map("Complaints")
 }
 
 model DirectMessage {
-  Id           String   @id(map: "PK_DirectMessages") @db.UniqueIdentifier
-  ReciepientId String   @db.UniqueIdentifier
-  Reciepient   User     @relation(fields: [ReciepientId], references: [Id], onUpdate: NoAction, map: "FK_DirectMessages_Users")
-  Message      Message?
+  id           String   @id(map: "PK_DirectMessages") @db.UniqueIdentifier
+  reciepientId String   @db.UniqueIdentifier
+  reciepient   User     @relation(fields: [reciepientId], references: [id], onUpdate: NoAction, map: "FK_DirectMessages_Users")
+  message      Message?
 
   @@map("DirectMessages")
 }
 
 model MessageRate {
-  MessageId  String  @db.UniqueIdentifier
-  UserId     String  @db.UniqueIdentifier
-  IsPositive Boolean
-  Message    Message @relation(fields: [MessageId], references: [Id], onUpdate: NoAction, map: "FK_MessageRates_Messages")
-  User       User    @relation(fields: [UserId], references: [Id], onUpdate: NoAction, map: "FK_MessageRates_Users")
+  messageId  String  @db.UniqueIdentifier
+  userId     String  @db.UniqueIdentifier
+  isPositive Boolean
+  message    Message @relation(fields: [messageId], references: [id], onUpdate: NoAction, map: "FK_MessageRates_Messages")
+  user       User    @relation(fields: [userId], references: [id], onUpdate: NoAction, map: "FK_MessageRates_Users")
 
-  @@id([MessageId, UserId], map: "PK_MessageRates")
+  @@id([messageId, userId], map: "PK_MessageRates")
   @@map("MessageRates")
 }
 
 model Message {
-  Id              String        @id(map: "PK_Messages") @db.UniqueIdentifier
-  SenderId        String        @db.UniqueIdentifier
-  Text            String        @db.NVarChar(Max)
-  CreationTime    DateTime      @db.DateTime
-  ParentMessageId String?       @db.UniqueIdentifier
-  MessageType     Int           @db.SmallInt
-  IsDeleted       Boolean
-  Complaints      Complaint[]
-  MessageRates    MessageRate[]
-  DirectMessage   DirectMessage @relation(fields: [Id], references: [Id], onUpdate: NoAction, map: "FK_Messages_DirectMessages")
-  ParentMessage   Message?      @relation("MessagesToMessages", fields: [ParentMessageId], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Messages_Messages_ParentMessageId")
-  ChildMessages   Message[]     @relation("MessagesToMessages")
-  Type            MessageType   @relation(fields: [MessageType], references: [Id], onUpdate: NoAction, map: "FK_Messages_MessageTypes")
-  TopicMessage    TopicMessage  @relation(fields: [Id], references: [Id], onUpdate: NoAction, map: "FK_Messages_TopicMessages")
-  Sender          User          @relation(fields: [SenderId], references: [Id], onUpdate: NoAction, map: "FK_Messages_Users")
+  id              String        @id(map: "PK_Messages") @db.UniqueIdentifier
+  senderId        String        @db.UniqueIdentifier
+  text            String        @db.NVarChar(Max)
+  creationTime    DateTime      @db.DateTime
+  parentMessageId String?       @db.UniqueIdentifier
+  messageType     Int           @db.SmallInt
+  isDeleted       Boolean
+  complaints      Complaint[]
+  messageRates    MessageRate[]
+  directMessage   DirectMessage @relation(fields: [id], references: [id], onUpdate: NoAction, map: "FK_Messages_DirectMessages")
+  parentMessage   Message?      @relation("MessagesToMessages", fields: [parentMessageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Messages_Messages_ParentMessageId")
+  childMessages   Message[]     @relation("MessagesToMessages")
+  type            MessageType   @relation(fields: [messageType], references: [id], onUpdate: NoAction, map: "FK_Messages_MessageTypes")
+  topicMessage    TopicMessage  @relation(fields: [id], references: [id], onUpdate: NoAction, map: "FK_Messages_TopicMessages")
+  sender          User          @relation(fields: [senderId], references: [id], onUpdate: NoAction, map: "FK_Messages_Users")
 
   @@map("Messages")
 }
 
 model MessageType {
-  Id       Int       @id(map: "PK_MessageTypes") @db.SmallInt
-  Name     String    @db.VarChar(50)
-  Messages Message[]
+  id       Int       @id(map: "PK_MessageTypes") @db.SmallInt
+  name     String    @db.VarChar(50)
+  messages Message[]
 
   @@map("MessageTypes")
 }
 
 model Notification {
-  Id          String  @id(map: "PK_Notifications") @db.UniqueIdentifier
-  UserId      String  @db.UniqueIdentifier
-  IsImportant Boolean
-  Text        String  @db.NVarChar(1024)
-  IsRead      Boolean
-  User        User    @relation(fields: [UserId], references: [Id], onUpdate: NoAction, map: "FK_Notifications_Users")
+  id          String  @id(map: "PK_Notifications") @db.UniqueIdentifier
+  userId      String  @db.UniqueIdentifier
+  isImportant Boolean
+  text        String  @db.NVarChar(1024)
+  isRead      Boolean
+  user        User    @relation(fields: [userId], references: [id], onUpdate: NoAction, map: "FK_Notifications_Users")
 
-  @@index([UserId, IsRead], map: "IX_Notifications_UserId_IsRead")
+  @@index([userId, isRead], map: "IX_Notifications_UserId_IsRead")
   @@map("Notifications")
 }
 
 model Penalty {
-  Id             String      @id(map: "PK_Penalties") @db.UniqueIdentifier
-  ExecutorId     String      @db.UniqueIdentifier
-  PunishedUserId String      @db.UniqueIdentifier
-  Reason         String      @db.NVarChar(1024)
-  TypeId         Int         @db.SmallInt
-  StartTime      DateTime    @db.DateTime
-  EndTime        DateTime    @db.DateTime
-  Type           PenaltyType @relation(fields: [TypeId], references: [Id], onUpdate: NoAction, map: "FK_Penalties_PenaltyTypes")
-  Executor       User        @relation("Penalties_ExecutorIdToUsers", fields: [ExecutorId], references: [Id], onUpdate: NoAction, map: "FK_Penalties_Users_ExecutorId")
-  PunishedUser   User        @relation("Penalties_PunishedUserIdToUsers", fields: [PunishedUserId], references: [Id], onUpdate: NoAction, map: "FK_Penalties_Users_PunishedUserId")
+  id             String      @id(map: "PK_Penalties") @db.UniqueIdentifier
+  executorId     String      @db.UniqueIdentifier
+  punishedUserId String      @db.UniqueIdentifier
+  reason         String      @db.NVarChar(1024)
+  typeId         Int         @db.SmallInt
+  startTime      DateTime    @db.DateTime
+  endTime        DateTime    @db.DateTime
+  type           PenaltyType @relation(fields: [typeId], references: [id], onUpdate: NoAction, map: "FK_Penalties_PenaltyTypes")
+  executor       User        @relation("Penalties_ExecutorIdToUsers", fields: [executorId], references: [id], onUpdate: NoAction, map: "FK_Penalties_Users_ExecutorId")
+  punishedUser   User        @relation("Penalties_PunishedUserIdToUsers", fields: [punishedUserId], references: [id], onUpdate: NoAction, map: "FK_Penalties_Users_PunishedUserId")
 
-  @@index([EndTime(sort: Desc), PunishedUserId], map: "IX_Penalties_EndTime_PunishedUserId")
+  @@index([endTime(sort: Desc), punishedUserId], map: "IX_Penalties_EndTime_PunishedUserId")
   @@map("Penalties")
 }
 
 model PenaltyType {
-  Id        Int       @id(map: "PK_PenaltyTypes") @db.SmallInt
-  Name      String    @db.VarChar(50)
-  Penalties Penalty[]
+  id        Int       @id(map: "PK_PenaltyTypes") @db.SmallInt
+  name      String    @db.VarChar(50)
+  penalties Penalty[]
 
   @@map("PenaltyTypes")
 }
 
 model Section {
-  Id           Int      @id(map: "PK_Sections")
-  Name         String   @db.NVarChar(256)
-  AuthorId     String   @db.UniqueIdentifier
-  CreationTime DateTime @db.DateTime
-  Description  String?  @db.NVarChar(Max)
-  Author       User     @relation(fields: [AuthorId], references: [Id], onUpdate: NoAction, map: "FK_Sections_Users")
-  Topics       Topic[]
+  id           Int      @id(map: "PK_Sections")
+  name         String   @db.NVarChar(256)
+  authorId     String   @db.UniqueIdentifier
+  creationTime DateTime @db.DateTime
+  description  String?  @db.NVarChar(Max)
+  author       User     @relation(fields: [authorId], references: [id], onUpdate: NoAction, map: "FK_Sections_Users")
+  topics       Topic[]
 
   @@map("Sections")
 }
 
 model Tag {
-  Id        Int        @id(map: "PK_Tags")
-  Name      String     @db.NVarChar(50)
-  TopicTags TopicTag[]
+  id        Int        @id(map: "PK_Tags")
+  name      String     @db.NVarChar(50)
+  topicTags TopicTag[]
 
   @@map("Tags")
 }
 
 model TopicMessage {
-  Id      String   @id(map: "PK_TopicMessages") @db.UniqueIdentifier
-  TopicId String   @db.UniqueIdentifier
-  Message Message?
-  Topic   Topic    @relation(fields: [TopicId], references: [Id], onUpdate: NoAction, map: "FK_TopicMessages_Topics")
+  id      String   @id(map: "PK_TopicMessages") @db.UniqueIdentifier
+  topicId String   @db.UniqueIdentifier
+  message Message?
+  topic   Topic    @relation(fields: [topicId], references: [id], onUpdate: NoAction, map: "FK_TopicMessages_Topics")
 
   @@map("TopicMessages")
 }
 
 model Topic {
-  Id            String         @id(map: "PK_Topics") @db.UniqueIdentifier
-  Name          String         @db.NVarChar(256)
-  SectionId     Int
-  AuthorId      String         @db.UniqueIdentifier
-  CreationTime  DateTime       @db.DateTime
-  IsImportant   Boolean
-  IsClosed      Boolean
-  TopicMessages TopicMessage[]
-  Section       Section        @relation(fields: [SectionId], references: [Id], onUpdate: NoAction, map: "FK_Topics_Sections")
-  Author        User           @relation(fields: [AuthorId], references: [Id], onUpdate: NoAction, map: "FK_Topics_Users")
-  TopicTags     TopicTag[]
+  id            String         @id(map: "PK_Topics") @db.UniqueIdentifier
+  name          String         @db.NVarChar(256)
+  sectionId     Int
+  authorId      String         @db.UniqueIdentifier
+  creationTime  DateTime       @db.DateTime
+  isImportant   Boolean
+  isClosed      Boolean
+  topicMessages TopicMessage[]
+  section       Section        @relation(fields: [sectionId], references: [id], onUpdate: NoAction, map: "FK_Topics_Sections")
+  author        User           @relation(fields: [authorId], references: [id], onUpdate: NoAction, map: "FK_Topics_Users")
+  topicTags     TopicTag[]
 
-  @@index([IsClosed], map: "IX_Topics_IsClosed")
+  @@index([isClosed], map: "IX_Topics_IsClosed")
   @@map("Topics")
 }
 
 model TopicTag {
-  TopicId String @db.UniqueIdentifier
-  TagId   Int
-  Tag     Tag    @relation(fields: [TagId], references: [Id], onUpdate: NoAction, map: "FK_TopicsTags_Tags")
-  Topic   Topic  @relation(fields: [TopicId], references: [Id], onUpdate: NoAction, map: "FK_TopicsTags_Topics")
+  topicId String @db.UniqueIdentifier
+  tagId   Int
+  tag     Tag    @relation(fields: [tagId], references: [id], onUpdate: NoAction, map: "FK_TopicsTags_Tags")
+  topic   Topic  @relation(fields: [topicId], references: [id], onUpdate: NoAction, map: "FK_TopicsTags_Topics")
 
-  @@id([TopicId, TagId], map: "PK_TopicsTags")
+  @@id([topicId, tagId], map: "PK_TopicsTags")
   @@map("TopicsTags")
 }
 
 model User {
-  Id                     String            @id(map: "PK_Users") @db.UniqueIdentifier
-  Login                  String            @unique(map: "IX_Users_Login") @db.VarChar(100)
-  FirstName              String?           @db.NVarChar(100)
-  LastName               String?           @db.NVarChar(100)
-  Email                  String?           @db.VarChar(255)
-  PasswordHash           Bytes             @db.Binary(64)
-  PasswordSalt           Bytes             @db.Binary(64)
-  AvatarUrl              String?           @db.NVarChar(256)
-  ComplaintAnswers       ComplaintAnswer[]
-  ComplaintantComplaints Complaint[]       @relation("Complaints_ComplainantIdToUsers")
-  AccusedComplaints      Complaint[]       @relation("Complaints_AccusedIdToUsers")
-  DirectMessages         DirectMessage[]
-  MessageRates           MessageRate[]
-  Messages               Message[]
-  Notifications          Notification[]
-  ExecutorPenalties      Penalty[]         @relation("Penalties_ExecutorIdToUsers")
-  PunishedPenalties      Penalty[]         @relation("Penalties_PunishedUserIdToUsers")
-  Sections               Section[]
-  Topics                 Topic[]
+  id                     String            @id(map: "PK_Users") @db.UniqueIdentifier
+  login                  String            @unique(map: "IX_Users_Login") @db.VarChar(100)
+  firstName              String?           @db.NVarChar(100)
+  lastName               String?           @db.NVarChar(100)
+  email                  String?           @db.VarChar(255)
+  passwordHash           Bytes             @db.Binary(64)
+  passwordSalt           Bytes             @db.Binary(64)
+  avatarUrl              String?           @db.NVarChar(256)
+  complaintAnswers       ComplaintAnswer[]
+  complaintantComplaints Complaint[]       @relation("Complaints_ComplainantIdToUsers")
+  accusedComplaints      Complaint[]       @relation("Complaints_AccusedIdToUsers")
+  directMessages         DirectMessage[]
+  messageRates           MessageRate[]
+  messages               Message[]
+  notifications          Notification[]
+  executorPenalties      Penalty[]         @relation("Penalties_ExecutorIdToUsers")
+  punishedPenalties      Penalty[]         @relation("Penalties_PunishedUserIdToUsers")
+  sections               Section[]
+  topics                 Topic[]
 
-  @@index([Email], map: "IX_Users_Email")
+  @@index([email], map: "IX_Users_Email")
   @@map("Users")
 }
