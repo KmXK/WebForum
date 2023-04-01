@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getHelloString } from './services/api.service';
+import styles from './App.module.scss'
 
 const App = () => {
     const [value, setValue] = useState('');
@@ -10,7 +11,7 @@ const App = () => {
     }, []);
 
     return (
-        <div>
+        <div className={ styles.container }>
             { value || 'No value read yet.' }
         </div>
     );
