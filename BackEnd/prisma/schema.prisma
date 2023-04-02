@@ -35,7 +35,7 @@ model Complaint {
 
 model DirectMessage {
   id           String  @db.UniqueIdentifier
-  messageType  Int     @db.SmallInt
+  messageType  Int     @db.SmallInt @default(0)
   reciepientId String  @db.UniqueIdentifier
   message      Message @relation(fields: [id, messageType], references: [id, messageType], onUpdate: NoAction, map: "FK_DirectMessages_Messages")
   reciepient   User    @relation(fields: [reciepientId], references: [id], onUpdate: NoAction, map: "FK_DirectMessages_Users")
@@ -145,7 +145,7 @@ model Tag {
 
 model TopicMessage {
   id          String  @db.UniqueIdentifier
-  messageType Int     @db.SmallInt
+  messageType Int     @db.SmallInt @default(1)
   topicId     String  @db.UniqueIdentifier
   message     Message @relation(fields: [id, messageType], references: [id, messageType], onUpdate: NoAction, map: "FK_TopicMessages_Messages")
   topic       Topic   @relation(fields: [topicId], references: [id], onUpdate: NoAction, map: "FK_TopicMessages_Topics")
