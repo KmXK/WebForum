@@ -34,11 +34,13 @@ model Complaint {
 }
 
 model DirectMessage {
-  id           String   @id(map: "PK_DirectMessages") @db.UniqueIdentifier
-  reciepientId String   @db.UniqueIdentifier
-  reciepient   User     @relation(fields: [reciepientId], references: [id], onUpdate: NoAction, map: "FK_DirectMessages_Users")
-  message      Message?
+  id           String  @db.UniqueIdentifier
+  messageType  Int     @db.SmallInt
+  reciepientId String  @db.UniqueIdentifier
+  message      Message @relation(fields: [id, messageType], references: [id, messageType], onUpdate: NoAction, map: "FK_DirectMessages_Messages")
+  reciepient   User    @relation(fields: [reciepientId], references: [id], onUpdate: NoAction, map: "FK_DirectMessages_Users")
 
+  @@id([id, messageType], map: "PK_DirectMessages")
   @@map("DirectMessages")
 }
 
@@ -54,22 +56,23 @@ model MessageRate {
 }
 
 model Message {
-  id              String        @id(map: "PK_Messages") @db.UniqueIdentifier
-  senderId        String        @db.UniqueIdentifier
-  text            String        @db.NVarChar(Max)
-  creationTime    DateTime      @db.DateTime
-  parentMessageId String?       @db.UniqueIdentifier
-  messageType     Int           @db.SmallInt
+  id              String         @id(map: "PK_Messages") @db.UniqueIdentifier
+  senderId        String         @db.UniqueIdentifier
+  text            String         @db.NVarChar(Max)
+  creationTime    DateTime       @db.DateTime
+  parentMessageId String?        @db.UniqueIdentifier
+  messageType     Int            @db.SmallInt
   isDeleted       Boolean
   complaints      Complaint[]
+  directMessage   DirectMessage?
+  topicMessage    TopicMessage?
   messageRates    MessageRate[]
-  directMessage   DirectMessage @relation(fields: [id], references: [id], onUpdate: NoAction, map: "FK_Messages_DirectMessages")
-  parentMessage   Message?      @relation("MessagesToMessages", fields: [parentMessageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Messages_Messages_ParentMessageId")
-  childMessages   Message[]     @relation("MessagesToMessages")
-  type            MessageType   @relation(fields: [messageType], references: [id], onUpdate: NoAction, map: "FK_Messages_MessageTypes")
-  topicMessage    TopicMessage  @relation(fields: [id], references: [id], onUpdate: NoAction, map: "FK_Messages_TopicMessages")
-  sender          User          @relation(fields: [senderId], references: [id], onUpdate: NoAction, map: "FK_Messages_Users")
+  parentMessage   Message?       @relation("MessagesToMessages", fields: [parentMessageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Messages_Messages_ParentMessageId")
+  childMessages   Message[]      @relation("MessagesToMessages")
+  type            MessageType    @relation(fields: [messageType], references: [id], onUpdate: NoAction, map: "FK_Messages_MessageTypes")
+  sender          User           @relation(fields: [senderId], references: [id], onUpdate: NoAction, map: "FK_Messages_Users")
 
+  @@unique([id, messageType], map: "IX_Messages")
   @@map("Messages")
 }
 
@@ -141,11 +144,13 @@ model Tag {
 }
 
 model TopicMessage {
-  id      String   @id(map: "PK_TopicMessages") @db.UniqueIdentifier
-  topicId String   @db.UniqueIdentifier
-  message Message?
-  topic   Topic    @relation(fields: [topicId], references: [id], onUpdate: NoAction, map: "FK_TopicMessages_Topics")
+  id          String  @db.UniqueIdentifier
+  messageType Int     @db.SmallInt
+  topicId     String  @db.UniqueIdentifier
+  message     Message @relation(fields: [id, messageType], references: [id, messageType], onUpdate: NoAction, map: "FK_TopicMessages_Messages")
+  topic       Topic   @relation(fields: [topicId], references: [id], onUpdate: NoAction, map: "FK_TopicMessages_Topics")
 
+  @@id([id, messageType], map: "PK_TopicMessages")
   @@map("TopicMessages")
 }
 
