@@ -72,7 +72,7 @@ const sectionsData = [
         description: 'Section about Golang programming language',
         authorId: usersData.find(u => u.login === 'admin')!.id,
         creationTime: new Date(Date.parse('03/20/2003 14:41:55.123')),
-        parentSectionId: 1
+        parentSectionId: 0
     }
 ]
 
