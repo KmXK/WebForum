@@ -118,13 +118,16 @@ model PenaltyType {
 }
 
 model Section {
-  id           Int      @id(map: "PK_Sections")
-  name         String   @db.NVarChar(256)
-  authorId     String   @db.UniqueIdentifier
-  creationTime DateTime @db.DateTime
-  description  String?  @db.NVarChar(Max)
-  author       User     @relation(fields: [authorId], references: [id], onUpdate: NoAction, map: "FK_Sections_Users")
-  topics       Topic[]
+  id              Int       @id(map: "PK_Sections")
+  name            String    @db.NVarChar(256)
+  authorId        String    @db.UniqueIdentifier
+  parentSectionId Int?
+  creationTime    DateTime  @db.DateTime
+  description     String?   @db.NVarChar(Max)
+  parentSection   Section?  @relation("SectionsToSections", fields: [parentSectionId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Sections_Sections_ParentSectionId")
+  childSections   Section[] @relation("SectionsToSections")
+  author          User      @relation(fields: [authorId], references: [id], onUpdate: NoAction, map: "FK_Sections_Users")
+  topics          Topic[]
 
   @@map("Sections")
 }
