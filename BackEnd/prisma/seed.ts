@@ -82,7 +82,7 @@ const topicsData = [
         name: 'C#: What is the difference between First() and FirstOrDefault()?',
         creationTime: new Date(Date.parse('03/21/2003 16:41:55.123')),
         authorId: usersData.find(u => u.login === 'kmx')!.id,
-        isClosed: false,
+        closingTime: null,
         isImportant: false,
         sectionId: 2
     },
@@ -91,7 +91,7 @@ const topicsData = [
         name: 'Rules for C# section',
         creationTime: new Date(Date.parse('03/21/2003 00:41:55.111')),
         authorId: usersData.find(u => u.login === 'admin')!.id,
-        isClosed: true,
+        closingTime: new Date(Date.parse('03/21/2003 17:01:13.123')),
         isImportant: true,
         sectionId: 2
     },
@@ -100,7 +100,7 @@ const topicsData = [
         name: 'How to create beautiful cake for New Year Holiday?',
         creationTime: new Date(Date.parse('03/23/2003 01:41:55.111')),
         authorId: usersData.find(u => u.login === 'alex')!.id,
-        isClosed: false,
+        closingTime: null,
         isImportant: false,
         sectionId: 2
     }
