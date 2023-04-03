@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import styles from './App.module.scss'
-import { getAllSections } from './services/section.service';
-import { SectionTree } from './models/section-tree.model';
+import { SectionTree } from './models/section/section-tree.model';
+import { getAllSectionTrees } from './services/section/section.service';
 
 const App = () => {
     const [sections, setSections] = useState<SectionTree[]>([]);
 
     useEffect(() => {
-        getAllSections()
+        getAllSectionTrees()
             .then(s => {
                 setSections(s);
-                console.log(s)
             });
     }, []);
 
