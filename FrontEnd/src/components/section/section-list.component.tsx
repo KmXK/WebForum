@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { SectionTree } from '../../models/section/section-tree.model';
 import { getAllSectionTrees } from '../../services/section/section.service';
-import Section from './section.component';
+import Section from './section/section.component';
 import { Stack } from '@mui/material';
 
 const SectionList = () => {

@@ -3,8 +3,8 @@ import { AppBar, Toolbar, Typography } from '@mui/material';
 
 const Header = () => {
     return (
-        <AppBar title={ 'Penis' } position={ 'static' }
-                sx={ {background: '#ff5353'} }>
+        <AppBar position={ 'static' }
+                sx={ {background: '#ff5c5c'} }>
             <Toolbar>
                 <Typography variant={ 'h6' }>
                     Web Forum
