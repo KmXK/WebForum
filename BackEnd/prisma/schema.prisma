@@ -52,6 +52,7 @@ model MessageRate {
   user       User    @relation(fields: [userId], references: [id], onUpdate: NoAction, map: "FK_MessageRates_Users")
 
   @@id([messageId, userId], map: "PK_MessageRates")
+  @@index([isPositive], map: "IX_MessageRates_IsPositive")
   @@map("MessageRates")
 }
 
@@ -73,6 +74,7 @@ model Message {
   sender          User           @relation(fields: [senderId], references: [id], onUpdate: NoAction, map: "FK_Messages_Users")
 
   @@unique([id, messageType], map: "IX_Messages")
+  @@index([creationTime], map: "IX_Messages_CreationTime")
   @@map("Messages")
 }
 
@@ -132,6 +134,8 @@ model Section {
   author          User      @relation(fields: [authorId], references: [id], onUpdate: NoAction, map: "FK_Sections_Users")
   topics          Topic[]
 
+  @@index([creationTime], map: "IX_Sections_CreationTime")
+  @@index([name], map: "IX_Sections_Name")
   @@map("Sections")
 }
 
@@ -161,13 +165,14 @@ model Topic {
   authorId      String         @db.UniqueIdentifier
   creationTime  DateTime       @db.DateTime
   isImportant   Boolean
-  closingTime   DateTime?
+  closingTime   DateTime?      @db.DateTime
   topicMessages TopicMessage[]
   section       Section        @relation(fields: [sectionId], references: [id], onUpdate: NoAction, map: "FK_Topics_Sections")
   author        User           @relation(fields: [authorId], references: [id], onUpdate: NoAction, map: "FK_Topics_Users")
   topicTags     TopicTag[]
 
   @@index([closingTime], map: "IX_Topics_ClosingDate")
+  @@index([name], map: "IX_Topics_Name")
   @@map("Topics")
 }
 
