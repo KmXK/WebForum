@@ -1,27 +1,43 @@
-.container {
+.section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
   border: black 1px solid;
   border-radius: 15px;
   padding: 10px 10px;
   background-color: #ffcccc;
-  box-shadow: 5px 10px 20px #C6C6C6;
+  //box-shadow: 5px 10px 20px #C6C6C6;
 
   transition:
           box-shadow .3s,
           background-color .3s;
 
-  .name {
-    font-size: 20pt;
-  }
-
-  .description {
-    font-size: 14px;
-    color: #565656;
-  }
-
   &:hover {
     background-color: #ffb6b6;
-    box-shadow: 5px 10px 30px 10px #C6C6C6;
+    //box-shadow: 5px 10px 30px 10px #C6C6C6;
 
     cursor: pointer;
   }
+
+  .content {
+    .name {
+      font-size: 20pt;
+    }
+
+    .description {
+      font-size: 14px;
+      color: #565656;
+    }
+  }
+}
+
+.childSectionsContainer {
+  padding-top: 10px;
+  padding-left: 20px;
+}
+
+.collapseIcon {
+
 }

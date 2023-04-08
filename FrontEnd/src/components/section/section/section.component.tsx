@@ -1,20 +1,46 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { SectionTree } from '../../../models/section/section-tree.model';
 import styles from './section.module.scss'
+import SectionList from '../section-list.component';
+import { Box, Collapse } from '@mui/material';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 
 interface Props {
     section: SectionTree
 }
 
 const Section: FC<Props> = ({section}) => {
+    const [open, setOpen] = useState(true);
+
+    const hasNestedSections = section.sections.length !== 0;
+
     return (
-        <div className={styles.container}>
-            <div className={styles.name}>
-                { section.name }
-            </div>
-            <div className={styles.description}>
-                { section.description }
-            </div>
+        <div>
+            <Box className={styles.section} onClick={() => setOpen(!open)}>
+                <div className={styles.content}>
+                    <div className={styles.name}>
+                        { section.name }
+                    </div>
+                    <div className={styles.description}>
+                        { section.description }
+                    </div>
+                </div>
+
+                { hasNestedSections && (
+                    open
+                        ? <ExpandLess className={ styles.collapseIcon }/>
+                        : <ExpandMore className={ styles.collapseIcon }/>
+                )}
+
+            </Box>
+
+            { hasNestedSections &&
+                <Collapse in={open}>
+                    <div className={ styles.childSectionsContainer }>
+                        <SectionList sections={ section.sections }/>
+                    </div>
+                </Collapse>
+                 }
         </div>
     );
 };

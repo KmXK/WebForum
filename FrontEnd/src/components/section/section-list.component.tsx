@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { SectionTree } from '../../models/section/section-tree.model';
-import { getAllSectionTrees } from '../../services/section/section.service';
 import Section from './section/section.component';
 import { Stack } from '@mui/material';
 
-const SectionList = () => {
-    const [sections, setSections] = useState<SectionTree[]>([]);
+interface Props {
+    sections: SectionTree[]
+}
 
-    useEffect(() => {
-        getAllSectionTrees().then(setSections);
-    }, []);
-
+const SectionList = ({sections}: Props) => {
     return (
         <Stack spacing={ 2 }>
             { sections.map(s => <Section key={ s.id } section={ s }/>) }
