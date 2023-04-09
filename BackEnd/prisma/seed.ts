@@ -102,7 +102,7 @@ const topicsData = [
         authorId: usersData.find(u => u.login === 'alex')!.id,
         closingTime: null,
         isImportant: false,
-        sectionId: 2
+        sectionId: 1
     }
 ]
 
