@@ -10,9 +10,8 @@
   background-color: #ffcccc;
   //box-shadow: 5px 10px 20px #C6C6C6;
 
-  transition:
-          box-shadow .3s,
-          background-color .3s;
+  transition: box-shadow .3s,
+  background-color .3s;
 
   &:hover {
     background-color: #ffb6b6;
@@ -39,5 +38,13 @@
 }
 
 .collapseIcon {
+  border-radius: 15px;
+  width: 30px;
+  height: 30px;
 
+  transition: background-color .3s !important;
+
+  &:hover {
+    background-color: #ff977e;
+  }
 }

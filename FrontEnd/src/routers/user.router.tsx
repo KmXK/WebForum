@@ -1,7 +1,8 @@
-import { createBrowserRouter, Navigate, redirect } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import React from 'react';
 import SectionListScreen from '../screens/section-list.screen';
 import HomeScreen from '../screens/home.screen';
+import SectionScreen from '../screens/section.screen';
 
 export const userRouter = createBrowserRouter(
     [
@@ -14,16 +15,15 @@ export const userRouter = createBrowserRouter(
                     element: <Navigate to="/sections" replace={ false }/>,
                 },
                 {
+                    index: true,
                     path: '/sections',
                     element: <SectionListScreen/>
+                },
+                {
+                    path: '/sections/:sectionId',
+                    element: <SectionScreen/>
                 }
             ]
-        },
-        {
-            path: '*',
-            loader: () => {
-                throw redirect('/sections')
-            }
         }
     ]
 )

@@ -1,3 +1,5 @@
 import { Section } from './section.model';
 
-export type SectionTree = Section & {sections: SectionTree[]};
+export interface SectionTree extends Section {
+    sections: SectionTree[];
+}
