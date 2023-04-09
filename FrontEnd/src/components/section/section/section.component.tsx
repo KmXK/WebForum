@@ -32,14 +32,19 @@ const Section: FC<Props> = ({section}) => {
                     open
                         ? <ExpandLess
                             className={ styles.collapseIcon }
-                            onClick={ () => setOpen(false) }
+                            onClick={ (e) => {
+                                e.stopPropagation();
+                                setOpen(false)
+                            } }
                         />
                         : <ExpandMore
                             className={ styles.collapseIcon }
-                            onClick={ () => setOpen(true) }
+                            onClick={ (e) => {
+                                e.stopPropagation();
+                                setOpen(true)
+                            } }
                         />
                 ) }
-
             </Box>
 
             { hasNestedSections &&
