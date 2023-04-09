@@ -20,9 +20,20 @@ const SectionScreen = () => {
 
     return (
         <div>
-            { section.sections.length > 0 && <SectionList sections={ section.sections }/> }
+            { section.sections.length > 0 && (
+                <>
+                    <h2>Sections:</h2>
+                    <SectionList sections={ section.sections }/>
+                </>
+            ) }
 
-            <TopicList topics={ section.topics }/>
+            { section.topics.length > 0 && (
+                <>
+                    <h2>Topics:</h2>
+                    <TopicList topics={ section.topics }/>
+                </>
+            ) }
+
         </div>
     );
 };

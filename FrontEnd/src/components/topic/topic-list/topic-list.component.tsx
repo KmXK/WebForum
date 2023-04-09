@@ -10,8 +10,6 @@ interface Props {
 const TopicList: FC<Props> = ({topics}) => {
     return (
         <div>
-            <h2>Topics:</h2>
-            
             <Stack spacing={ 1 }>
                 { topics.map(t => <Topic key={ t.id } topic={ t }/>) }
             </Stack>

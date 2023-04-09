@@ -10,7 +10,6 @@ interface Props {
 const SectionList = ({sections}: Props) => {
     return (
         <div>
-            <h2>Sections:</h2>
             <Stack spacing={ 2 }>
                 { sections.map(s => <Section key={ s.id } section={ s }/>) }
             </Stack>
