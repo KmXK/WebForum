@@ -1,17 +1,20 @@
 import React from 'react';
-import { SectionTree } from '../../models/section/section-tree.model';
+import { SectionTreeModel } from '../../models/section/section-tree.model';
 import Section from './section/section.component';
 import { Stack } from '@mui/material';
 
 interface Props {
-    sections: SectionTree[]
+    sections: SectionTreeModel[]
 }
 
 const SectionList = ({sections}: Props) => {
     return (
-        <Stack spacing={ 2 }>
-            { sections.map(s => <Section key={ s.id } section={ s }/>) }
-        </Stack>
+        <div>
+            <h2>Sections:</h2>
+            <Stack spacing={ 2 }>
+                { sections.map(s => <Section key={ s.id } section={ s }/>) }
+            </Stack>
+        </div>
     );
 };
 

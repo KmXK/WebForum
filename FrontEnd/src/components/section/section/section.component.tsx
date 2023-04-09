@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { SectionTree } from '../../../models/section/section-tree.model';
+import { SectionTreeModel } from '../../../models/section/section-tree.model';
 import styles from './section.module.scss'
 import SectionList from '../section-list.component';
 import { Box, Collapse } from '@mui/material';
@@ -7,7 +7,7 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
-    section: SectionTree
+    section: SectionTreeModel
 }
 
 const Section: FC<Props> = ({section}) => {

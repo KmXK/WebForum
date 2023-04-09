@@ -1,0 +1,24 @@
+.topic {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  border: black 1px solid;
+  border-radius: 15px;
+  padding: 10px 10px;
+  background-color: #ffcccc;
+
+  transition: background-color .3s;
+
+  &:hover {
+    background-color: #ffb6b6;
+    cursor: pointer;
+  }
+
+  .content {
+    .name {
+      font-size: 15pt;
+    }
+  }
+}

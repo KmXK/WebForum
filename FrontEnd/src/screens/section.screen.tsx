@@ -1,23 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { SectionDetails } from '../models/section/section-details.model';
+import { SectionDetailsModel } from '../models/section/section-details.model';
 import { getSection } from '../services/section/section.service';
-import Section from '../components/section/section/section.component';
+import Loader from '../components/common/loader.component';
+import SectionList from '../components/section/section-list.component';
+import TopicList from '../components/topic/topic-list/topic-list.component';
 
 const SectionScreen = () => {
     const {sectionId} = useParams<{ sectionId: string }>();
-    const [section, setSection] = useState<SectionDetails>();
+    const [section, setSection] = useState<SectionDetailsModel>();
 
     useEffect(() => {
         getSection(sectionId!).then(setSection);
     }, [sectionId])
 
+    if (!section) {
+        return <Loader/>
+    }
+
     return (
         <div>
-            { section
-                ? <Section section={ section }/>
-                : <p>Loading...</p>
-            }
+            { section.sections.length > 0 && <SectionList sections={ section.sections }/> }
+
+            <TopicList topics={ section.topics }/>
         </div>
     );
 };

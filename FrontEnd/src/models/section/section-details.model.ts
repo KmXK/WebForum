@@ -1,6 +1,6 @@
-import { SectionTree } from './section-tree.model';
-import { Topic } from './topic.model';
+import { SectionTreeModel } from './section-tree.model';
+import { TopicModel } from './topic.model';
 
-export interface SectionDetails extends SectionTree {
-    topics: Topic[];
+export interface SectionDetailsModel extends SectionTreeModel {
+    topics: TopicModel[];
 }

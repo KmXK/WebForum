@@ -1,14 +1,14 @@
-import { SectionTree } from '../../models/section/section-tree.model';
+import { SectionTreeModel } from '../../models/section/section-tree.model';
 import axios from 'axios';
-import { SectionDetails } from '../../models/section/section-details.model';
+import { SectionDetailsModel } from '../../models/section/section-details.model';
 
-export async function getAllSectionTrees(): Promise<SectionTree[]> {
+export async function getAllSectionTrees(): Promise<SectionTreeModel[]> {
     const response = await axios.get('/api/section');
-    return response.data as SectionTree[];
+    return response.data as SectionTreeModel[];
 }
 
-export async function getSection(id: string): Promise<SectionDetails> {
+export async function getSection(id: string): Promise<SectionDetailsModel> {
     const response = await axios.get(`/api/section/${ id }`);
-    return response.data as SectionDetails;
+    return response.data as SectionDetailsModel;
 }
 

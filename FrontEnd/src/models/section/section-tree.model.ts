@@ -1,5 +1,5 @@
-import { Section } from './section.model';
+import { SectionModel } from './section.model';
 
-export interface SectionTree extends Section {
-    sections: SectionTree[];
+export interface SectionTreeModel extends SectionModel {
+    sections: SectionTreeModel[];
 }
