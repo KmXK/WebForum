@@ -3,7 +3,7 @@ import SectionList from '../components/section/section-list.component';
 import { getAllSectionTrees } from '../services/section/section.service';
 import { SectionTree } from '../models/section/section-tree.model';
 
-const SectionScreen = () => {
+const SectionListScreen = () => {
     const [sections, setSections] = useState<SectionTree[]>([]);
 
     useEffect(() => {
@@ -15,4 +15,4 @@ const SectionScreen = () => {
     );
 };
 
-export default SectionScreen;
+export default SectionListScreen;
