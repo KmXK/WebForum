@@ -1,18 +1,18 @@
-.topic {
+.message {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
 
-  border: 0;
+  border: black 1px solid;
   border-radius: 15px;
   padding: 10px 10px;
-  background-color: #ffffff;
+  background-color: #ffcccc;
 
-  transition: box-shadow .3s, background-color .3s;
+  transition: background-color .3s;
 
   &:hover {
-    box-shadow: 0 0 15px 5px #dddddd;
+    background-color: #ffb6b6;
     cursor: pointer;
   }
 

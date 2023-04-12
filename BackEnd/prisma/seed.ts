@@ -14,33 +14,41 @@ const usersData = [
     {
         id: getGuid(),
         login: 'admin',
+        firstName: 'admin',
+        lastName: 'admin',
         email: 'admin@email.com',
-        roleId: RoleTypeModel.ADMIN,
+        roleId: RoleTypeModel.ADMIN
     },
     {
         id: getGuid(),
         login: 'moderator',
+        firstName: 'moderator',
+        lastName: 'moderator',
         email: 'moderator@email.com',
-        roleId: RoleTypeModel.MODERATOR,
+        roleId: RoleTypeModel.MODERATOR
     },
     {
         id: getGuid(),
         login: 'kmx',
+        firstName: 'Kirill',
+        lastName: 'Guydo',
         email: 'kmx@email.com',
-        roleId: RoleTypeModel.USER,
+        roleId: RoleTypeModel.USER
     },
     {
         id: getGuid(),
         login: 'alex',
+        firstName: 'Alexey',
+        lastName: 'Bondar',
         email: 'alex@email.com',
-        roleId: RoleTypeModel.USER,
-    },
+        roleId: RoleTypeModel.USER
+    }
 ]
 
 const rolesData = [
     {id: RoleTypeModel.USER, name: 'User'},
     {id: RoleTypeModel.MODERATOR, name: 'Moderator'},
-    {id: RoleTypeModel.ADMIN, name: 'Admin'},
+    {id: RoleTypeModel.ADMIN, name: 'Admin'}
 ];
 
 const sectionsData = [
@@ -108,7 +116,7 @@ const topicsData = [
 
 const messageTypesData = [
     {id: MessageTypeModel.Direct, name: 'Direct message'},
-    {id: MessageTypeModel.Topic, name: 'Topic message'},
+    {id: MessageTypeModel.Topic, name: 'Topic message'}
 ]
 
 const messagesData = [
@@ -157,7 +165,7 @@ const messagesData = [
         topicId: topicsData[2].id,
         isDeleted: false,
         text: 'Who knows how to bake a cool and beautiful cake for New year holidays???'
-    },
+    }
 ]
 
 async function main() {

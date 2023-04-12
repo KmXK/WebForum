@@ -2,9 +2,10 @@ import React, { FC, useState } from 'react';
 import { SectionTreeModel } from '../../../models/section/section-tree.model';
 import styles from './section.module.scss'
 import SectionList from '../section-list.component';
-import { Box, Collapse } from '@mui/material';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import { Collapse, Paper } from '@mui/material';
+import { ExpandLess } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import classNames from 'classnames';
 
 interface Props {
     section: SectionTreeModel
@@ -18,7 +19,7 @@ const Section: FC<Props> = ({section}) => {
 
     return (
         <div>
-            <Box className={ styles.section } onClick={ () => navigate(`/sections/${ section.id }`) }>
+            <Paper className={ styles.section } onClick={ () => navigate(`/sections/${ section.id }`) }>
                 <div className={ styles.content }>
                     <div className={ styles.name }>
                         { section.name }
@@ -29,23 +30,15 @@ const Section: FC<Props> = ({section}) => {
                 </div>
 
                 { hasNestedSections && (
-                    open
-                        ? <ExpandLess
-                            className={ styles.collapseIcon }
-                            onClick={ (e) => {
-                                e.stopPropagation();
-                                setOpen(false)
-                            } }
-                        />
-                        : <ExpandMore
-                            className={ styles.collapseIcon }
-                            onClick={ (e) => {
-                                e.stopPropagation();
-                                setOpen(true)
-                            } }
-                        />
+                    <ExpandLess
+                        className={ classNames(styles.collapseIcon, {[styles.open]: open}) }
+                        onClick={ (e) => {
+                            e.stopPropagation();
+                            setOpen(!open)
+                        } }
+                    />
                 ) }
-            </Box>
+            </Paper>
 
             { hasNestedSections &&
                 <Collapse in={ open }>

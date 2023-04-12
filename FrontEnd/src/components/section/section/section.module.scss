@@ -4,18 +4,18 @@
   align-items: center;
   justify-content: space-between;
 
-  border: black 1px solid;
-  border-radius: 15px;
-  padding: 10px 10px;
-  background-color: #ffcccc;
+  border: 0;
+  border-radius: 15px !important;
+  color: black;
+  padding: 15px 10px;
+  background-color: #ffffff; //#537981;
   //box-shadow: 5px 10px 20px #C6C6C6;
+  box-shadow: 10px 10px 5px 0 #aaaaaa;
 
-  transition: box-shadow .3s,
-  background-color .3s;
+  transition: box-shadow .3s, background-color .3s;
 
   &:hover {
-    background-color: #ffb6b6;
-    //box-shadow: 5px 10px 30px 10px #C6C6C6;
+    box-shadow: 10px 10px 10px 0 #aaaaaa;
 
     cursor: pointer;
   }
@@ -33,18 +33,23 @@
 }
 
 .childSectionsContainer {
-  padding-top: 10px;
+  padding-top: 15px;
   padding-left: 20px;
 }
 
 .collapseIcon {
   border-radius: 15px;
-  width: 30px;
-  height: 30px;
+  width: 100px;
+  height: 100px;
+  font-size: 30pt;
 
-  transition: background-color .3s !important;
+  transition: transform 1s, background-color .3s !important;
 
   &:hover {
-    background-color: #ff977e;
+    background-color: #eeeeee;
+  }
+
+  &.open {
+    transform: rotateY(180deg) rotateZ(180deg);
   }
 }
