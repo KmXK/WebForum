@@ -1,34 +1,11 @@
-.section {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-
-  border: 0;
-  border-radius: 15px !important;
-  color: black;
-  padding: 15px 10px;
-  background-color: #ffffff; //#537981;
-  //box-shadow: 5px 10px 20px #C6C6C6;
-  box-shadow: 10px 10px 5px 0 #aaaaaa;
-
-  transition: box-shadow .3s, background-color .3s;
-
-  &:hover {
-    box-shadow: 10px 10px 10px 0 #aaaaaa;
-
-    cursor: pointer;
+.content {
+  .name {
+    font-size: 20pt;
   }
 
-  .content {
-    .name {
-      font-size: 20pt;
-    }
-
-    .description {
-      font-size: 14px;
-      color: #565656;
-    }
+  .description {
+    font-size: 14px;
+    color: #565656;
   }
 }
 

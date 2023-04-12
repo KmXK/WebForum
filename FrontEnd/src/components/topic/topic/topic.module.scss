@@ -1,24 +1,5 @@
-.topic {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-
-  border: 0;
-  border-radius: 15px;
-  padding: 10px 10px;
-  background-color: #ffffff;
-
-  transition: box-shadow .3s, background-color .3s;
-
-  &:hover {
-    box-shadow: 0 0 15px 5px #dddddd;
-    cursor: pointer;
-  }
-
-  .content {
-    .name {
-      font-size: 15pt;
-    }
+.content {
+  .name {
+    font-size: 15pt;
   }
 }
