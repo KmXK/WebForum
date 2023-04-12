@@ -4,14 +4,17 @@ import { SectionService } from './services/section.service';
 import { SectionController } from './controllers/section.controller';
 import { TopicService } from './services/topic.service';
 import { TopicController } from './controllers/topic.controller';
+import { MessageService } from './services/message.service';
+import { MessageController } from './controllers/message.controller';
 
 @Module({
     providers: [
         PrismaService,
         SectionService,
-        TopicService
+        TopicService,
+        MessageService
     ],
-    controllers: [SectionController, TopicController]
+    controllers: [SectionController, TopicController, MessageController]
 })
 export class AppModule {
 }

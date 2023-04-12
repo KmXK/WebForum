@@ -13,9 +13,8 @@
 
   transition: box-shadow .3s, background-color .3s;
 
-  &:hover {
+  &.clickable:hover {
     box-shadow: 10px 10px 10px 0 #aaaaaa;
-
     cursor: pointer;
   }
 }

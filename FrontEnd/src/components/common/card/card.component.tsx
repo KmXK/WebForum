@@ -5,12 +5,19 @@ import classNames from 'classnames';
 import { DefaultComponentProps } from '@mui/material/OverridableComponent';
 
 interface Props extends DefaultComponentProps<PaperTypeMap<{}, 'div'>> {
+    isClickable?: boolean
 }
 
-const Card: FC<Props> = ({onClick, children, ...rest}) => {
+const Card: FC<Props> = ({onClick, children, isClickable, ...rest}) => {
+    isClickable = isClickable !== undefined ? isClickable : true;
+
     return (
         <div>
-            <Paper { ...rest } className={ classNames(rest.className, styles.container) } onClick={ onClick }>
+            <Paper
+                { ...rest }
+                className={ classNames(rest.className, styles.container, isClickable ? styles.clickable : {}) }
+                onClick={ isClickable ? onClick : undefined }
+            >
                 { children }
             </Paper>
         </div>

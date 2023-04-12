@@ -137,12 +137,7 @@ const messagesData = [
         parentMessageId: 0,
         topicId: topicsData[0].id,
         isDeleted: false,
-        text: `
-        There are next differences:
-        - \`First()\` method throws exception if collection is empty.
-        - \`FirstOrDefault()\` method returns null if collection is empty.
-        - If collection's item type is value type, then \`FirstOrDefault()\` method returns \`Nullable<<Type>>\`,  where \`Type\` is the type of the collection's item
-        `
+        text: `There are next differences:\r\n- \`First()\` method throws exception if collection is empty.\r\n- \`FirstOrDefault()\` method returns null if collection is empty. \r\n\r\nIf collection's item type is value type, then \`FirstOrDefault()\` method returns \`Nullable<<Type>>\`,  where \`Type\` is the type of the collection's item`
     },
     {
         id: getGuid(),
@@ -151,11 +146,7 @@ const messagesData = [
         senderId: usersData.find(u => u.login === 'admin')!.id,
         topicId: topicsData[1].id,
         isDeleted: false,
-        text: `
-        ## Rules:
-        1. Don't ask simple questions.
-        2. Try to find question's answers before asking it.
-        `
+        text: `## Rules:\r\n1. Don't ask simple questions.\r\n2. Try to find question's answers before asking it.`
     },
     {
         id: getGuid(),

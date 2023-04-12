@@ -8,7 +8,7 @@ datasource db {
 }
 
 model ComplaintAnswer {
-  id           String    @id(map: "PK_ComplaintAnswers") @db.UniqueIdentifier
+  id           String    @id(map: "PK_ComplaintAnswers") @db.UniqueIdentifier @default(uuid())
   responderId  String    @db.UniqueIdentifier
   compaintId   String    @db.UniqueIdentifier
   text         String    @db.NVarChar(1024)
@@ -20,7 +20,7 @@ model ComplaintAnswer {
 }
 
 model Complaint {
-  id            String            @id(map: "PK_Complaints") @db.UniqueIdentifier
+  id            String            @id(map: "PK_Complaints") @db.UniqueIdentifier @default(uuid())
   complainantId String            @db.UniqueIdentifier
   accusedId     String            @db.UniqueIdentifier
   description   String            @db.NVarChar(1024)
@@ -34,7 +34,7 @@ model Complaint {
 }
 
 model DirectMessage {
-  id           String  @db.UniqueIdentifier
+  id           String  @db.UniqueIdentifier @default(uuid())
   messageType  Int     @db.SmallInt @default(0)
   reciepientId String  @db.UniqueIdentifier
   message      Message @relation(fields: [id, messageType], references: [id, messageType], onUpdate: NoAction, map: "FK_DirectMessages_Messages")
@@ -57,7 +57,7 @@ model MessageRate {
 }
 
 model Message {
-  id              String         @id(map: "PK_Messages") @db.UniqueIdentifier
+  id              String         @id(map: "PK_Messages") @db.UniqueIdentifier @default(uuid())
   senderId        String         @db.UniqueIdentifier
   text            String         @db.NVarChar(Max)
   creationTime    DateTime       @db.DateTime
@@ -87,7 +87,7 @@ model MessageType {
 }
 
 model Notification {
-  id          String  @id(map: "PK_Notifications") @db.UniqueIdentifier
+  id          String  @id(map: "PK_Notifications") @db.UniqueIdentifier @default(uuid())
   userId      String  @db.UniqueIdentifier
   isImportant Boolean
   text        String  @db.NVarChar(1024)
@@ -99,7 +99,7 @@ model Notification {
 }
 
 model Penalty {
-  id             String      @id(map: "PK_Penalties") @db.UniqueIdentifier
+  id             String      @id(map: "PK_Penalties") @db.UniqueIdentifier @default(uuid())
   executorId     String      @db.UniqueIdentifier
   punishedUserId String      @db.UniqueIdentifier
   reason         String      @db.NVarChar(1024)
@@ -148,7 +148,7 @@ model Tag {
 }
 
 model TopicMessage {
-  id          String  @db.UniqueIdentifier
+  id          String  @db.UniqueIdentifier @default(uuid())
   messageType Int     @db.SmallInt @default(1)
   topicId     String  @db.UniqueIdentifier
   message     Message @relation(fields: [id, messageType], references: [id, messageType], onUpdate: NoAction, map: "FK_TopicMessages_Messages")
@@ -159,7 +159,7 @@ model TopicMessage {
 }
 
 model Topic {
-  id            String         @id(map: "PK_Topics") @db.UniqueIdentifier
+  id            String         @id(map: "PK_Topics") @db.UniqueIdentifier @default(uuid())
   name          String         @db.NVarChar(256)
   sectionId     Int
   authorId      String         @db.UniqueIdentifier
@@ -177,7 +177,7 @@ model Topic {
 }
 
 model TopicTag {
-  topicId String @db.UniqueIdentifier
+  topicId String @db.UniqueIdentifier @default(uuid())
   tagId   Int
   tag     Tag    @relation(fields: [tagId], references: [id], onUpdate: NoAction, map: "FK_TopicsTags_Tags")
   topic   Topic  @relation(fields: [topicId], references: [id], onUpdate: NoAction, map: "FK_TopicsTags_Topics")
@@ -187,7 +187,7 @@ model TopicTag {
 }
 
 model User {
-  id                     String            @id(map: "PK_Users") @db.UniqueIdentifier
+  id                     String            @id(map: "PK_Users") @db.UniqueIdentifier @default(uuid())
   login                  String            @unique(map: "IX_Users_Login") @db.VarChar(100)
   firstName              String?           @db.NVarChar(100)
   lastName               String?           @db.NVarChar(100)

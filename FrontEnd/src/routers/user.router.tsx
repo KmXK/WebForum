@@ -3,6 +3,7 @@ import React from 'react';
 import SectionListScreen from '../screens/section-list.screen';
 import HomeScreen from '../screens/home.screen';
 import SectionScreen from '../screens/section.screen';
+import TopicScreen from '../screens/topic.screen';
 
 export const userRouter = createBrowserRouter(
     [
@@ -22,6 +23,10 @@ export const userRouter = createBrowserRouter(
                 {
                     path: '/sections/:sectionId',
                     element: <SectionScreen/>
+                },
+                {
+                    path: '/topics/:topicId',
+                    element: <TopicScreen/>
                 }
             ]
         }

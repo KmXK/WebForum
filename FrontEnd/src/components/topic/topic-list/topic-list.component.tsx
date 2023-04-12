@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { TopicModel } from '../../../models/section/topic.model';
+import { TopicModel } from '../../../models/topic/topic.model';
 import Topic from '../topic/topic.component';
 import { Stack } from '@mui/material';
 

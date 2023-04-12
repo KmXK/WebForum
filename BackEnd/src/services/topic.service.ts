@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from './common/prisma.service';
-import { TopicDetailsViewModel } from '../models/topic-details.model';
+import { TopicDetailsViewModel } from '../models/topic-details.viewmodel';
 
 @Injectable()
 export class TopicService {
@@ -20,6 +20,11 @@ export class TopicService {
                                     sender: true
                                 }
                             }
+                        },
+                        orderBy: {
+                            message: {
+                                creationTime: 'asc'
+                            }
                         }
                     },
                     author: true
@@ -36,10 +41,11 @@ export class TopicService {
             authorName: topic.author.firstName + ' ' + topic.author.lastName,
             messages: topic.topicMessages.map(m => ({
                 id: m.message.id,
-                authorName: m.message.sender.firstName + ' ' + m.message.sender.lastName,
+                authorName: m.message.sender.login,
                 text: m.message.text,
-                creationTime: m.message.creationTime
+                creationTime: +m.message.creationTime
             }))
+
         }
     }
 }
