@@ -1,20 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './common/prisma.service';
 import { Section } from '@prisma/client';
-import { SectionTree } from '../models/section-tree.model';
-import { SectionDetails } from '../models/section-details.model';
+import { SectionTreeViewModel } from '../models/section-tree.viewmodel';
+import { SectionDetailsViewModel } from '../models/section-details.viewmodel';
 
 @Injectable()
 export class SectionService {
     constructor(private prismaService: PrismaService) {
     }
 
-    public async getAllSectionTrees(): Promise<SectionTree[]> {
+    public async getAllSectionTrees(): Promise<SectionTreeViewModel[]> {
         const sections = await this.prismaService.section.findMany();
         return this.buildSectionTrees(sections);
     }
 
-    public async getSection(id: number): Promise<SectionDetails> {
+    public async getSection(id: number): Promise<SectionDetailsViewModel> {
         const section = await this.prismaService
             .section
             .findUnique({
@@ -36,14 +36,14 @@ export class SectionService {
             .map(t => t.getSubTree(section.id))
             .find(t => t !== undefined)!;
 
-        return new SectionDetails(section, subTree.sections);
+        return new SectionDetailsViewModel(section, subTree.sections);
     }
 
-    private buildSectionTrees(sections: Section[]): SectionTree[] {
-        function group(parentSectionId: number | null): SectionTree[] {
+    private buildSectionTrees(sections: Section[]): SectionTreeViewModel[] {
+        function group(parentSectionId: number | null): SectionTreeViewModel[] {
             return sections
                 .filter(s => s.parentSectionId === parentSectionId)
-                .map(s => new SectionTree(s, group(s.id)));
+                .map(s => new SectionTreeViewModel(s, group(s.id)));
         }
 
         return group(null);

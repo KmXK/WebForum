@@ -1,4 +1,4 @@
-export interface Message {
+export interface MessageViewModel {
     id: string;
     authorName: string;
     text: string;

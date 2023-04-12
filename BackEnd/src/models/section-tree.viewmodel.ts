@@ -1,13 +1,13 @@
 import { Section } from '@prisma/client';
 
-export class SectionTree {
+export class SectionTreeViewModel {
     id: number;
     name: string;
     creationTime: Date;
     description: string | null;
-    sections: SectionTree[];
+    sections: SectionTreeViewModel[];
 
-    constructor(section: Section, sections: SectionTree[]) {
+    constructor(section: Section, sections: SectionTreeViewModel[]) {
         this.id = section.id;
         this.name = section.name;
         this.creationTime = section.creationTime;
@@ -16,7 +16,7 @@ export class SectionTree {
     }
 
 
-    getSubTree(rootId: number): SectionTree | undefined {
+    getSubTree(rootId: number): SectionTreeViewModel | undefined {
 
         if (rootId === this.id) {
             return this;

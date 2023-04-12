@@ -1,6 +1,6 @@
 import { Topic } from '@prisma/client';
 
-export class TopicInfo {
+export class TopicInfoViewModel {
     id: string;
     name: string;
 

@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from './common/prisma.service';
-import { TopicDetails } from '../models/topic-details.model';
+import { TopicDetailsViewModel } from '../models/topic-details.model';
 
 @Injectable()
 export class TopicService {
     constructor(private prismaService: PrismaService) {
     }
 
-    public async getTopic(id: string): Promise<TopicDetails> {
+    public async getTopic(id: string): Promise<TopicDetailsViewModel> {
         const topic = await this.prismaService.topic
             .findUnique({
                 where: {id},

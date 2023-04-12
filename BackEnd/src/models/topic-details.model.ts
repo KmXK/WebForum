@@ -1,8 +1,8 @@
-import { Message } from './message.model';
+import { MessageViewModel } from './message.viewmodel';
 
-export class TopicDetails {
+export class TopicDetailsViewModel {
     id: string;
     name: string;
     authorName: string;
-    messages: Message[];
+    messages: MessageViewModel[];
 }
