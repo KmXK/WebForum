@@ -13,5 +13,10 @@ export default defineConfig({
                 secure: false
             }
         }
+    },
+    css: {
+        modules: {
+            localsConvention: 'camelCaseOnly'
+        }
     }
 })
