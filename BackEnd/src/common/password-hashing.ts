@@ -11,5 +11,7 @@ export const hashPassword = (password: string) => {
 
 export const verifyPassword = (password: string, hash: Buffer, salt: Buffer) => {
     const currentHash = crypto.createHmac('sha512', salt).update(password).digest();
+    console.log(hash);
+    console.log(currentHash)
     return currentHash.compare(hash) === 0;
 };

@@ -8,17 +8,17 @@ const useStyles = makeStyles(() => ({
     form: {
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'end',
+        alignItems: 'end'
     },
     textField: {
         backgroundColor: 'white',
         marginTop: 30,
-        marginBottom: 2,
+        marginBottom: 2
     },
     button: {
         justifySelf: 'end',
-        marginTop: 2,
-    },
+        marginTop: 2
+    }
 }));
 
 interface Props {
