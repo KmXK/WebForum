@@ -1,7 +1,7 @@
 import { Role, User } from '@prisma/client';
 
 export class AuthDto {
-    email: string;
+    login: string;
     password: string;
 }
 

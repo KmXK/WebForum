@@ -13,7 +13,7 @@ export class AuthService {
 
     async login(userDto: AuthDto) {
         const user = await this.userService.getUserBy({
-            login: userDto.email
+            login: userDto.login
         });
 
         if (!user) {
@@ -55,9 +55,11 @@ export class AuthService {
 
         const user = await this.userService.getUserBy({id: userData.id});
 
+        console.log(user);
+
         if (user === null || user.rt === null) throw new UnauthorizedException();
 
-        if (await bcrypt.compare(user.rt, token)) throw new UnauthorizedException();
+        if (!await bcrypt.compare(token, user.rt)) throw new UnauthorizedException();
 
         const data = await this.generateTokens(user);
         const rtHash = await this.generateHash(data.refreshToken);
@@ -86,11 +88,11 @@ export class AuthService {
 
         return {
             accessToken: this.jwtService.sign(payload, {
-                expiresIn: 15 * 60,
+                expiresIn: 10,
                 secret: process.env.AT_SECRET
             }),
             refreshToken: this.jwtService.sign(payload, {
-                expiresIn: 60 * 60 * 24 * 7,
+                expiresIn: 15 * 60,
                 secret: process.env.RT_SECRET
             }),
             data: payload
@@ -98,6 +100,6 @@ export class AuthService {
     }
 
     private async generateHash(data: string) {
-        return await bcrypt.hash(data, 5);
+        return await bcrypt.hash(data, 0);
     }
 }

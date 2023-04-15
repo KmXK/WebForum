@@ -8,12 +8,14 @@ export class MessageService {
     constructor(private prismaService: PrismaService) {
     }
 
-    public async addMessage(topicId: string, text: string): Promise<MessageViewModel> {
+    public async addMessage(userId: string, topicId: string, text: string): Promise<MessageViewModel> {
         const sender = await this.prismaService.user.findUnique({
             where: {
-                login: 'admin'
+                id: userId
             }
         });
+
+        console.log(sender)
 
         if (sender == null) {
             throw new NotFoundException('Invalid user');

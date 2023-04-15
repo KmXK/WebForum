@@ -33,9 +33,9 @@ function LoginPage({}: Props) {
                 Login
             </Typography>
             <TextField
-                id="email"
-                type="email"
-                label="email"
+                id="login"
+                type="text"
+                label="login"
                 variant="outlined"
                 value={ email }
                 onChange={ (event) => setEmail(event.target.value) }

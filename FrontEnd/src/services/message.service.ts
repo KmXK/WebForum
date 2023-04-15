@@ -1,8 +1,8 @@
 import { MessageModel } from '../models/message/message.model';
-import axios from 'axios';
+import { api } from '../api';
 
 export async function addMessage(topicId: string, text: string): Promise<MessageModel> {
-    const response = await axios.post('/api/message', {
+    const response = await api.post('/api/message', {
         topicId,
         text
     });

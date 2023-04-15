@@ -29,6 +29,10 @@ export const userRouter = createBrowserRouter(
                     element: <TopicScreen/>
                 }
             ]
+        },
+        {
+            path: '*',
+            element: <Navigate to={ '/' }/>
         }
     ]
 )
