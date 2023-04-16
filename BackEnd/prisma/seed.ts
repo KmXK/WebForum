@@ -1,7 +1,18 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 // noinspection ES6PreferShortImport
 
-import { Message, PrismaClient, Section, Tag, Topic, User } from '@prisma/client';
+import {
+    Complaint,
+    ComplaintAnswer,
+    Message,
+    Penalty,
+    PenaltyType,
+    PrismaClient,
+    Section,
+    Tag,
+    Topic,
+    User
+} from '@prisma/client';
 import { MessageType, RoleType } from '../src/shared/enums';
 import { PasswordHashingService } from '../src/common/password-hashing';
 import { faker } from '@faker-js/faker';
@@ -64,6 +75,8 @@ const users: Omit<Omit<User, 'passwordSalt'>, 'passwordHash'>[] = [
         refreshToken: null
     }
 ];
+
+const admin = users[0];
 
 for (let i = 0; i < 1000; i++) {
     const {firstName, lastName} = randomUntil(() => ({
@@ -161,7 +174,7 @@ for (let i = 0; i < 1000; i++) {
 
         const existingTopicMessages = topicMessages.filter(m => m.topicId === topic!.id);
 
-        if (randomBoolean(90) && existingTopicMessages.length > 0) {
+        if (randomBoolean(60) && existingTopicMessages.length > 0) {
             parentMessageId = randomElement(existingTopicMessages).message.id;
         }
     } else {
@@ -201,6 +214,69 @@ for (let i = 0; i < 1000; i++) {
     }
 }
 
+const complaints: Complaint[] = [];
+
+for (let i = 0; i < 50; i++) {
+    const complainantId = randomElement(users).id;
+    const accusedId = randomUntil(() => randomElement(users), u => u.id === complainantId).id;
+
+    let message: Message | null = null;
+
+    if (randomBoolean(50) && !!topicMessages.find(m => m.message.senderId === accusedId)) {
+        message = randomElement(topicMessages.filter(m => m.message.senderId === accusedId)).message;
+    }
+
+    complaints.push({
+        id: randomGuid(),
+        description: faker.lorem.sentence(),
+        complainantId: complainantId,
+        accusedId: accusedId,
+        messageId: message ? message.id : null,
+        creationTime: faker.date.between(message !== null ? message.creationTime : '01/01/2023', Date.now())
+    });
+}
+
+const penaltyTypes: PenaltyType[] = [
+    'Mute',
+    'Ban',
+    'PreventCreateTopic',
+    'PreventCreateMessage'
+].map((t, i) => ({
+    id: i,
+    name: t
+}));
+
+const complaintAnswers: ComplaintAnswer[] = [];
+const penalties: Penalty[] = [];
+
+for (let i = 0; i < 20; i++) {
+    const complaint = randomUntil(() => randomElement(complaints), c => !!complaintAnswers.find(a => a.complaintId === c.id));
+
+    const responseTime = faker.date.soon(10, complaint.creationTime);
+
+    if (randomBoolean(50)) {
+        penalties.push({
+            id: randomGuid(),
+            reason: faker.lorem.text(),
+            executorId: admin.id,
+            startTime: responseTime,
+            endTime: faker.date.soon(50, responseTime),
+            creationTime: responseTime,
+            typeId: faker.datatype.number({min: 0, max: 3}),
+            punishedUserId: complaint.accusedId
+        });
+    }
+
+    complaintAnswers.push({
+        id: randomGuid(),
+        text: faker.lorem.text(),
+        complaintId: complaint.id,
+        responderId: admin.id,
+        responseTime: responseTime
+    });
+}
+
+
 async function main() {
     await prisma.$transaction([
         prisma.$executeRawUnsafe('EXEC sp_MSForEachTable "ALTER TABLE ? NOCHECK CONSTRAINT all"'),
@@ -231,8 +307,6 @@ async function main() {
         })
     });
     await prisma.messageType.createMany({data: messageTypes});
-
-    console.log(topics);
 
     await prisma.topicTag.createMany({
         data: topics.map(t => t.tags.map(tag => ({
@@ -267,6 +341,11 @@ async function main() {
             recipientId: m.recipientId
         }))
     });
+
+    await prisma.penaltyType.createMany({data: penaltyTypes});
+    await prisma.complaint.createMany({data: complaints});
+    await prisma.complaintAnswer.createMany({data: complaintAnswers});
+    await prisma.penalty.createMany({data: penalties});
 }
 
 main()

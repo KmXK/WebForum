@@ -10,10 +10,10 @@ datasource db {
 model ComplaintAnswer {
   id           String    @id(map: "PK_ComplaintAnswers") @db.UniqueIdentifier @default(uuid())
   responderId  String    @db.UniqueIdentifier
-  compaintId   String    @db.UniqueIdentifier
+  complaintId  String    @db.UniqueIdentifier
   text         String    @db.NVarChar(1024)
   responseTime DateTime  @db.DateTime
-  complaint    Complaint @relation(fields: [compaintId], references: [id], onUpdate: NoAction, map: "FK_ComplaintAnswers_Complaints")
+  complaint    Complaint @relation(fields: [complaintId], references: [id], onUpdate: NoAction, map: "FK_ComplaintAnswers_Complaints")
   responser    User      @relation(fields: [responderId], references: [id], onUpdate: NoAction, map: "FK_ComplaintAnswers_Users")
 
   @@map("ComplaintAnswers")
@@ -25,6 +25,7 @@ model Complaint {
   accusedId     String            @db.UniqueIdentifier
   description   String            @db.NVarChar(1024)
   messageId     String?           @db.UniqueIdentifier
+  creationTime  DateTime          @db.DateTime
   answers       ComplaintAnswer[]
   message       Message?          @relation(fields: [messageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Complaints_Messages")
   complaintant  User              @relation("Complaints_ComplainantIdToUsers", fields: [complainantId], references: [id], onUpdate: NoAction, map: "FK_Complaints_Users_ComplaintantId")
@@ -106,6 +107,7 @@ model Penalty {
   typeId         Int         @db.SmallInt
   startTime      DateTime    @db.DateTime
   endTime        DateTime    @db.DateTime
+  creationTime   DateTime    @db.DateTime
   type           PenaltyType @relation(fields: [typeId], references: [id], onUpdate: NoAction, map: "FK_Penalties_PenaltyTypes")
   executor       User        @relation("Penalties_ExecutorIdToUsers", fields: [executorId], references: [id], onUpdate: NoAction, map: "FK_Penalties_Users_ExecutorId")
   punishedUser   User        @relation("Penalties_PunishedUserIdToUsers", fields: [punishedUserId], references: [id], onUpdate: NoAction, map: "FK_Penalties_Users_PunishedUserId")
