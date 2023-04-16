@@ -196,7 +196,7 @@ model User {
   passwordSalt           Bytes             @db.Binary(64)
   avatarUrl              String?           @db.NVarChar(256)
   roleId                 Int               @db.SmallInt
-  rt                     String?           @db.NVarChar(512)
+  refreshToken           String?           @db.NVarChar(512)
   complaintAnswers       ComplaintAnswer[]
   complaintantComplaints Complaint[]       @relation("Complaints_ComplainantIdToUsers")
   accusedComplaints      Complaint[]       @relation("Complaints_AccusedIdToUsers")
