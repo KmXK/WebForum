@@ -34,11 +34,11 @@ model Complaint {
 }
 
 model DirectMessage {
-  id           String  @db.UniqueIdentifier @default(uuid())
-  messageType  Int     @db.SmallInt @default(0)
-  reciepientId String  @db.UniqueIdentifier
-  message      Message @relation(fields: [id, messageType], references: [id, messageType], onUpdate: NoAction, map: "FK_DirectMessages_Messages")
-  reciepient   User    @relation(fields: [reciepientId], references: [id], onUpdate: NoAction, map: "FK_DirectMessages_Users")
+  id          String  @db.UniqueIdentifier @default(uuid())
+  messageType Int     @db.SmallInt @default(0)
+  recipientId String  @db.UniqueIdentifier
+  message     Message @relation(fields: [id, messageType], references: [id, messageType], onUpdate: NoAction, map: "FK_DirectMessages_Messages")
+  reciepient  User    @relation(fields: [recipientId], references: [id], onUpdate: NoAction, map: "FK_DirectMessages_Users")
 
   @@id([id, messageType], map: "PK_DirectMessages")
   @@map("DirectMessages")

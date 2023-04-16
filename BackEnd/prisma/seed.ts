@@ -1,49 +1,87 @@
-import { PrismaClient } from '@prisma/client';
-import { v4 } from 'uuid';
-import { MessageType, RoleType } from '@shared/enums';
-import { PasswordHashingService } from '@common/password-hashing';
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+// noinspection ES6PreferShortImport
 
-const prisma = new PrismaClient();
+import { Message, PrismaClient, Section, Tag, Topic, User } from '@prisma/client';
+import { MessageType, RoleType } from '../src/shared/enums';
+import { PasswordHashingService } from '../src/common/password-hashing';
+import { faker } from '@faker-js/faker';
+
+const prisma = new PrismaClient({
+    log: [
+        {
+            emit: 'stdout',
+            level: 'query'
+        }
+    ]
+});
 const hashingService = new PasswordHashingService();
 
-function getGuid() {
-    return v4();
+function randomGuid() {
+    return faker.datatype.uuid();
 }
 
-const usersData = [
+function randomBoolean(probability: number): boolean {
+    return faker.datatype.number({min: 0, max: 100}) >= probability;
+}
+
+function randomElement<T>(array: T[]): T {
+    return array[faker.datatype.number({max: array.length - 1})];
+}
+
+function randomUntil<T>(func: () => T, condition: (value: T) => boolean) {
+    let value: T;
+
+    do {
+        value = func();
+    } while (condition(value));
+
+    return value;
+}
+
+function randomElements<T>(array: T[], count: number): T[] {
+    if (count >= array.length) {
+        return array.filter(() => true);
+    }
+
+    const elements: T[] = [];
+
+    for (let i = 0; i < count; i++) {
+        elements.push(randomUntil(() => randomElement(array), t => elements.includes(t)));
+    }
+
+    return elements;
+}
+
+const users: Omit<Omit<User, 'passwordSalt'>, 'passwordHash'>[] = [
     {
-        id: getGuid(),
+        id: randomGuid(),
         login: 'admin',
-        firstName: 'admin',
-        lastName: 'admin',
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
         email: 'admin@email.com',
-        roleId: RoleType.ADMIN
-    },
-    {
-        id: getGuid(),
-        login: 'moderator',
-        firstName: 'moderator',
-        lastName: 'moderator',
-        email: 'moderator@email.com',
-        roleId: RoleType.MODERATOR
-    },
-    {
-        id: getGuid(),
-        login: 'kmx',
-        firstName: 'Kirill',
-        lastName: 'Guydo',
-        email: 'kmx@email.com',
-        roleId: RoleType.USER
-    },
-    {
-        id: getGuid(),
-        login: 'alex',
-        firstName: 'Alexey',
-        lastName: 'Bondar',
-        email: 'alex@email.com',
-        roleId: RoleType.USER
+        roleId: RoleType.ADMIN,
+        avatarUrl: null,
+        refreshToken: null
     }
 ];
+
+for (let i = 0; i < 1000; i++) {
+    const {firstName, lastName} = randomUntil(() => ({
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName()
+    }), ({firstName, lastName}) => !!users.find(u => u.firstName === firstName && u.lastName === lastName));
+
+    users.push({
+        id: randomGuid(),
+        login: faker.internet.userName(firstName, lastName),
+        firstName: firstName,
+        lastName: lastName,
+        email: faker.internet.email(firstName, lastName),
+        roleId: RoleType.USER,
+        avatarUrl: null,
+        refreshToken: null
+    });
+}
 
 const rolesData = [
     {id: RoleType.USER, name: 'User'},
@@ -51,162 +89,184 @@ const rolesData = [
     {id: RoleType.ADMIN, name: 'Admin'}
 ];
 
-const sectionsData = [
-    {
-        id: 0,
-        name: 'Programming',
-        description: 'Section about programming',
-        authorId: usersData.find(u => u.login === 'admin')?.id,
-        creationTime: new Date(Date.parse('03/20/2003 12:34:55.301'))
-    },
-    {
-        id: 1,
-        name: 'Cooking',
-        description: 'Cool section about kitchen and yummy food',
-        authorId: usersData.find(u => u.login === 'admin')?.id,
-        creationTime: new Date(Date.parse('03/28/2003 17:32:12.111'))
-    },
-    {
-        id: 2,
-        name: 'C#',
-        description: 'Section about .NET programming and C# language',
-        authorId: usersData.find(u => u.login === 'admin')?.id,
-        creationTime: new Date(Date.parse('03/20/2003 13:30:55.301')),
-        parentSectionId: 0
-    },
-    {
-        id: 3,
-        name: 'Golang',
-        description: 'Section about Golang programming language',
-        authorId: usersData.find(u => u.login === 'admin')?.id,
-        creationTime: new Date(Date.parse('03/20/2003 14:41:55.123')),
-        parentSectionId: 0
-    }
-];
+const sections: Section[] = [];
+for (let i = 0; i < 50; i++) {
+    sections.push({
+        id: i,
+        name: faker.lorem.sentence(),
+        description: faker.lorem.paragraphs(2),
+        authorId: randomElement(users).id,
+        creationTime: faker.date.between('01/01/2023', Date.now()),
+        parentSectionId: (sections.length > 0 && randomBoolean(80)) ? randomElement(sections).id : null
+    });
+}
 
-const topicsData = [
-    {
-        id: getGuid(),
-        name: 'C#: What is the difference between First() and FirstOrDefault()?',
-        creationTime: new Date(Date.parse('03/21/2003 16:41:55.123')),
-        authorId: usersData.find(u => u.login === 'kmx')?.id,
-        closingTime: null,
-        isImportant: false,
-        sectionId: 2
-    },
-    {
-        id: getGuid(),
-        name: 'Rules for C# section',
-        creationTime: new Date(Date.parse('03/21/2003 00:41:55.111')),
-        authorId: usersData.find(u => u.login === 'admin')?.id,
-        closingTime: new Date(Date.parse('03/21/2003 17:01:13.123')),
-        isImportant: true,
-        sectionId: 2
-    },
-    {
-        id: getGuid(),
-        name: 'How to create beautiful cake for New Year Holiday?',
-        creationTime: new Date(Date.parse('03/23/2003 01:41:55.111')),
-        authorId: usersData.find(u => u.login === 'alex')?.id,
-        closingTime: null,
-        isImportant: false,
-        sectionId: 1
-    }
-];
+const tags: Tag[] = [
+    'Programming',
+    'Cooking',
+    'Funny',
+    'Cars',
+    'Food',
+    'Traveling',
+    'Underground',
+    'Smartphones',
+    'Apple',
+    'Companies',
+    'Stackoverflow'
+].map((t, i) => ({
+    id: i,
+    name: t
+}));
 
-const messageTypesData = [
+const topics: (Topic & { tags: Tag[] })[] = new Array(300).fill(0).map(() => {
+    const section = randomElement(sections);
+
+    return {
+        id: randomGuid(),
+        name: faker.lorem.sentence(),
+        authorId: randomElement(users).id,
+        closingTime: null,
+        isImportant: randomBoolean(90),
+        sectionId: section.id,
+        creationTime: faker.date.between(section.creationTime, Date.now()),
+        tags: randomElements(tags, faker.datatype.number({max: tags.length - 1}))
+    };
+});
+
+const messageTypes = [
     {id: MessageType.Direct, name: 'Direct message'},
     {id: MessageType.Topic, name: 'Topic message'}
 ];
 
-const messagesData = [
-    {
-        id: getGuid(),
-        creationTime: new Date(Date.parse('03/21/2003 16:53:13.123')),
-        messageType: MessageType.Topic,
-        senderId: usersData.find(u => u.login === 'kmx')?.id,
-        topicId: topicsData[0].id,
-        isDeleted: false,
-        text: 'I cannot understand what is the difference between First() and FirstOrDefault()?'
-    },
-    {
-        id: getGuid(),
-        creationTime: new Date(Date.parse('03/21/2003 17:00:13.123')),
-        messageType: MessageType.Topic,
-        senderId: usersData.find(u => u.login === 'admin')?.id,
-        parentMessageId: 0,
-        topicId: topicsData[0].id,
-        isDeleted: false,
-        text: 'There are next differences:\r\n- `First()` method throws exception if collection is empty.\r\n- `FirstOrDefault()` method returns null if collection is empty. \r\n\r\nIf collection\'s item type is value type, then `FirstOrDefault()` method returns `Nullable<<Type>>`,  where `Type` is the type of the collection\'s item'
-    },
-    {
-        id: getGuid(),
-        creationTime: new Date(Date.parse('03/21/2003 01:50:55.111')),
-        messageType: MessageType.Topic,
-        senderId: usersData.find(u => u.login === 'admin')?.id,
-        topicId: topicsData[1].id,
-        isDeleted: false,
-        text: '## Rules:\r\n1. Don\'t ask simple questions.\r\n2. Try to find question\'s answers before asking it.'
-    },
-    {
-        id: getGuid(),
-        creationTime: new Date(Date.parse('03/23/2003 03:41:55.111')),
-        messageType: MessageType.Topic,
-        senderId: usersData.find(u => u.login === 'alex')?.id,
-        topicId: topicsData[2].id,
-        isDeleted: false,
-        text: 'Who knows how to bake a cool and beautiful cake for New year holidays???'
+const topicMessages: ({ message: Message, topicId: string })[] = [];
+const directMessages: ({ message: Message, recipientId: string })[] = [];
+
+for (let i = 0; i < 1000; i++) {
+    let parentMessageId: string | null = null;
+    const senderId = randomElement(users).id;
+    let creationTime: Date;
+    let topic: Topic | undefined;
+    let recipient: Omit<User, 'passwordHash' | 'passwordSalt'> | undefined;
+
+    const isTopicMessage = randomBoolean(5);
+
+    if (isTopicMessage) {
+        topic = randomUntil(() => randomElement(topics), t => !!t.closingTime);
+
+        creationTime = faker.date.between(topic.creationTime, Date.now());
+
+        if (randomBoolean(99) && topics.filter(t => !t.closingTime).length > 100) {
+            topic.closingTime = faker.date.between(creationTime, Date.now());
+        }
+
+        const existingTopicMessages = topicMessages.filter(m => m.topicId === topic!.id);
+
+        if (randomBoolean(90) && existingTopicMessages.length > 0) {
+            parentMessageId = randomElement(existingTopicMessages).message.id;
+        }
+    } else {
+        recipient = randomUntil(() => randomElement(users), u => u.id === senderId);
+        creationTime = faker.date.between('01/01/2023', Date.now());
+
+        const existingDirectMessages = directMessages
+            .filter(m => m.recipientId === recipient!.id && m.message.senderId === senderId);
+
+        if (randomBoolean(90) && existingDirectMessages.length > 0) {
+            parentMessageId = randomElement(existingDirectMessages).message.id;
+        }
     }
-];
+
+    const message: Message = {
+        id: randomGuid(),
+        creationTime: creationTime,
+        messageType: isTopicMessage ? MessageType.Topic : MessageType.Direct,
+        isDeleted: randomBoolean(95),
+        text: faker.lorem.text(),
+        senderId: senderId,
+        parentMessageId: parentMessageId
+    };
+
+    if (isTopicMessage) {
+        // noinspection TypeScriptValidateTypes
+        topicMessages.push({
+            message: message,
+            topicId: topic!.id
+        });
+    } else {
+        // noinspection TypeScriptValidateTypes
+        directMessages.push({
+            message: message,
+            recipientId: recipient!.id
+        });
+    }
+}
 
 async function main() {
-    await prisma.topicMessage.deleteMany();
-    await prisma.message.deleteMany();
-    await prisma.messageType.deleteMany();
-    await prisma.topic.deleteMany();
-    await prisma.section.deleteMany();
-    await prisma.user.deleteMany();
-    await prisma.role.deleteMany();
-    await prisma.topic.deleteMany();
+    await prisma.$transaction([
+        prisma.$executeRawUnsafe('EXEC sp_MSForEachTable "ALTER TABLE ? NOCHECK CONSTRAINT all"'),
+        prisma.$executeRawUnsafe('EXEC sp_MSForEachTable "DELETE FROM ?"'),
+        prisma.$executeRawUnsafe('EXEC sp_MSForEachTable "ALTER TABLE ? WITH CHECK CHECK CONSTRAINT all"')
+    ]);
 
     await prisma.role.createMany({data: rolesData});
 
-    await Promise.all(usersData.map(async u => {
-        const password = hashingService.hashPassword(u.login);
-        return prisma.user.create({
-            data: {
+    await prisma.user.createMany({
+        data: users.map(u => {
+            const password = hashingService.hashPassword(u.login);
+            return {
                 ...u,
                 passwordHash: password.hash,
                 passwordSalt: password.salt
-            }
-        });
-    }));
+            };
+        })
+    });
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    await prisma.section.createMany({data: sectionsData});
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    await prisma.topic.createMany({data: topicsData});
-    await prisma.messageType.createMany({data: messageTypesData});
+    await prisma.tag.createMany({data: tags});
+    await prisma.section.createMany({data: sections});
+    await prisma.topic.createMany({
+        data: topics.map(t => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const {tags, ...topic} = t;
+            return topic;
+        })
+    });
+    await prisma.messageType.createMany({data: messageTypes});
 
-    await Promise.all(messagesData.map(async m => {
-        const {topicId, ...pm} = m;
-        await prisma.message.create({
-            data: {
-                ...pm,
-                parentMessageId: (m.parentMessageId ? messagesData[m.parentMessageId].id : null),
-                messageType: MessageType.Topic
-            }
-        });
-        await prisma.topicMessage.create({
-            data: {
-                id: m.id,
-                topicId
-            }
-        });
-    }));
+    console.log(topics);
 
+    await prisma.topicTag.createMany({
+        data: topics.map(t => t.tags.map(tag => ({
+            tagId: tag.id,
+            topicId: t.id
+        }))).flat()
+    });
+
+    await prisma.message.createMany({
+        data: topicMessages.map(m => ({
+            ...m.message
+        }))
+    });
+    await prisma.message.createMany({
+        data: directMessages.map(m => ({
+            ...m.message
+        }))
+    });
+
+    await prisma.topicMessage.createMany({
+        data: topicMessages.map(m => ({
+            id: m.message.id,
+            messageType: m.message.messageType,
+            topicId: m.topicId
+        }))
+    });
+
+    await prisma.directMessage.createMany({
+        data: directMessages.map(m => ({
+            id: m.message.id,
+            messageType: m.message.messageType,
+            recipientId: m.recipientId
+        }))
+    });
 }
 
 main()
