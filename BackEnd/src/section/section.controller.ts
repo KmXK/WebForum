@@ -1,5 +1,6 @@
 import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { SectionService } from './section.service';
+import { SectionDetails, SectionTree } from './dto';
 
 @Controller('section')
 export class SectionController {
@@ -7,12 +8,12 @@ export class SectionController {
     }
 
     @Get()
-    all() {
+    all(): Promise<SectionTree[]> {
         return this.sectionService.all();
     }
 
     @Get(':id')
-    section(@Param('id', ParseIntPipe) id: number) {
+    section(@Param('id', ParseIntPipe) id: number): Promise<SectionDetails> {
         return this.sectionService.get(id);
     }
 }

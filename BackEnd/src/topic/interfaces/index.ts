@@ -1,1 +1,1 @@
-export { TopicDetails } from './topic-details.interface';
+export { TopicDetailsDto } from './topic-details.dto';

@@ -1,13 +1,13 @@
 import { PrismaService } from '@common/prisma';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { TopicDetails } from './interfaces';
+import { TopicDetailsDto } from './interfaces';
 
 @Injectable()
 export class TopicService {
     constructor(private prismaService: PrismaService) {
     }
 
-    public async get(id: string): Promise<TopicDetails> {
+    public async get(id: string): Promise<TopicDetailsDto> {
         const topic = await this.prismaService.topic
             .findUnique({
                 where: {id},
@@ -19,7 +19,7 @@ export class TopicService {
                                 include: {
                                     sender: true
                                 }
-                            },
+                            }
                         },
                         orderBy: {
                             message: {

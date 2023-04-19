@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { SectionDetails, SectionTree } from './interfaces';
+import { SectionDetails, SectionTree } from './dto';
 import { Section } from '@prisma/client';
 import { PrismaService } from '@common/prisma';
 

@@ -1,6 +1,6 @@
 import { Message } from '@models';
 
-export interface TopicDetails {
+export interface TopicDetailsDto {
     id: string;
     name: string;
     authorName: string;
