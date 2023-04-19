@@ -40,11 +40,7 @@ export class AuthService {
 
         const data = await this.generateTokens(user);
 
-        const rtHash = await this.generateHash(data.refreshToken);
-        await this.prismaService.user.update({
-            where: {id: user.id},
-            data: {refreshToken: rtHash}
-        });
+        await this.setRefreshToken(user.id, data.refreshToken);
 
         return data;
     }
@@ -56,10 +52,10 @@ export class AuthService {
         });
     }
 
-    async refreshTokens(token: string) {
-        if (!token) throw new UnauthorizedException();
+    async refreshTokens(refreshToken: string) {
+        if (!refreshToken) throw new UnauthorizedException();
 
-        const payload = this.jwtService.verify<PayloadDto>(token,
+        const payload = this.jwtService.verify<PayloadDto>(refreshToken,
             {
                 secret: process.env.RT_SECRET
             });
@@ -73,17 +69,13 @@ export class AuthService {
 
         if (user === null
             || user.refreshToken === null
-            || !(await bcrypt.compare(token, user.refreshToken))) {
+            || !(await bcrypt.compare(refreshToken, user.refreshToken))) {
             throw new UnauthorizedException();
         }
 
         const data = await this.generateTokens(user);
-        const rtHash = await this.generateHash(data.refreshToken);
 
-        await this.prismaService.user.update({
-            where: {id: user.id},
-            data: {refreshToken: rtHash}
-        });
+        await this.setRefreshToken(user.id, data.refreshToken);
 
         return data;
     }
@@ -96,7 +88,7 @@ export class AuthService {
 
         return {
             accessToken: this.jwtService.sign(payload, {
-                expiresIn: 15 * 60,
+                expiresIn: 60,
                 secret: process.env.AT_SECRET
             }),
             refreshToken: this.jwtService.sign(payload, {
@@ -107,7 +99,12 @@ export class AuthService {
         };
     }
 
-    private async generateHash(data: string) {
-        return await bcrypt.hash(data, 5);
+    private async setRefreshToken(userId: string, refreshToken: string) {
+        const refreshTokenHash = await bcrypt.hash(refreshToken, 5);
+        await this.prismaService.user.update({
+            where: {id: userId},
+            data: {refreshToken: refreshTokenHash}
+        });
     }
+
 }

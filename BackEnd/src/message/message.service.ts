@@ -15,8 +15,7 @@ export class MessageService {
     ): Promise<Message> {
         const sender = await this.prismaService.user.findUnique({
             where: {
-                //id: userId
-                login: 'admin'
+                id: userId
             }
         });
 

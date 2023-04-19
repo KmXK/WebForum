@@ -1,9 +1,9 @@
 import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/signIn.dto';
 import { GetCurrentUserId } from './decorators/getcurrentuserid.decorator';
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -16,18 +16,18 @@ export class AuthController {
         @Res({passthrough: true}) response: Response
     ) {
         const {accessToken, refreshToken, data} = await this.authService.signIn(userDto);
-        response.cookie('jwt', refreshToken, {httpOnly: true});
+        response.cookie('rt_jwt', refreshToken, {httpOnly: true});
         return {accessToken, user: data};
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard)
     @Post('logout')
     async logout(
         @Res({passthrough: true}) response: Response,
         @GetCurrentUserId() userId: string
     ) {
         await this.authService.signOut(userId);
-        response.cookie('jwt', '', {httpOnly: true});
+        response.cookie('rt_jwt', '', {httpOnly: true});
     }
 
     @Post('refresh')
@@ -36,9 +36,9 @@ export class AuthController {
         @Res({passthrough: true}) response: Response
     ) {
         const {accessToken, refreshToken, data} = await this.authService.refreshTokens(
-            request.cookies['jwt']
+            request.cookies['rt_jwt']
         );
-        response.cookie('jwt', refreshToken, {httpOnly: true});
+        response.cookie('rt_jwt', refreshToken, {httpOnly: true});
         return {accessToken, user: data};
     }
 }

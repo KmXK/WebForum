@@ -4,6 +4,6 @@ import { PayloadDto } from '../dto/payload.dto';
 export const GetCurrentUser = createParamDecorator(
     (data: keyof PayloadDto | undefined, context: ExecutionContext) => {
         const request = context.switchToHttp().getRequest();
-        return request.user;
+        return request.payload;
     }
 );

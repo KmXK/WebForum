@@ -4,11 +4,13 @@ import { PrismaModule } from '@common/prisma';
 import { AuthService } from './auth.service';
 import { CommonModule } from '@common/common.module';
 import { AuthController } from './auth.controller';
+import { AtStrategy } from './strategies/at.strategy';
+import { AuthGuard } from './auth.guard';
 
 @Module({
-    imports: [JwtModule, PrismaModule, CommonModule],
-    exports: [AuthService],
-    providers: [AuthService],
+    imports: [JwtModule.register({global: true}), PrismaModule, CommonModule],
+    exports: [AuthService, AuthGuard],
+    providers: [AuthService, AtStrategy, AuthGuard],
     controllers: [AuthController]
 })
 export class AuthModule {
