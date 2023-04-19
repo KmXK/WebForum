@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { AppBar, Avatar, Toolbar, Typography } from '@mui/material';
+import React from 'react';
+import { AppBar, Toolbar, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import MainProfileMenu from './profile-menu.component';
 import styled from '@emotion/styled';
@@ -10,7 +10,6 @@ const MainToolbar = styled(Toolbar)({
 });
 
 function Header() {
-    const [open, setOpen] = useState(false);
     return (
         <AppBar position="sticky" sx={ {zIndex: (theme) => theme.zIndex.drawer + 1} }>
             <MainToolbar>
@@ -25,11 +24,8 @@ function Header() {
                         Web Forum
                     </Link>
                 </Typography>
-                <Avatar
-                    onClick={ () => setOpen(true) }
-                />
+                <MainProfileMenu/>
             </MainToolbar>
-            <MainProfileMenu open={ open } setOpen={ setOpen }/>
         </AppBar>
     );
 }
