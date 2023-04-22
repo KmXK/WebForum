@@ -4,6 +4,7 @@ import { SectionModule } from './section';
 import { TopicModule } from './topic';
 import { MessageModule } from './message';
 import { AuthModule } from './auth/auth.module';
+import { WebsocketsModule } from './websockets/websockets.module';
 
 @Module({
     imports: [
@@ -11,7 +12,8 @@ import { AuthModule } from './auth/auth.module';
         SectionModule,
         TopicModule,
         MessageModule,
-        AuthModule
+        AuthModule,
+        WebsocketsModule
     ]
 })
 export class AppModule {

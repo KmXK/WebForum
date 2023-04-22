@@ -9,3 +9,9 @@ export async function addMessage(topicId: string, text: string): Promise<Message
 
     return response.data;
 }
+
+export async function getMessage(messageId: string): Promise<MessageModel> {
+    const response = await api.get(`/api/message/${ messageId }`);
+
+    return response.data;
+}

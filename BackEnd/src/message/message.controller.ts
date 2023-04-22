@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { GetCurrentUserId } from '../auth/decorators/getcurrentuserid.decorator';
 import { AuthGuard } from '../auth/auth.guard';
@@ -7,6 +7,13 @@ import { AuthGuard } from '../auth/auth.guard';
 @Controller('message')
 export class MessageController {
     constructor(private messageService: MessageService) {
+    }
+
+    @Get(':id')
+    public async get(
+        @Param('id') messageId: string
+    ) {
+        return await this.messageService.get(messageId);
     }
 
     @Post('')

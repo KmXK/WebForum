@@ -2,10 +2,38 @@ import { PrismaService } from '@common/prisma';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Message } from '@models';
 import { MessageType } from '@shared/enums';
+import { MessageSocketService } from '../websockets/services/message-socket.service';
 
 @Injectable()
 export class MessageService {
-    constructor(private prismaService: PrismaService) {
+    constructor(
+        private prismaService: PrismaService,
+        private socketService: MessageSocketService
+    ) {
+    }
+
+    public async get(
+        messageId: string
+    ): Promise<Message> {
+        const message = await this.prismaService.message.findUnique({
+            where: {
+                id: messageId
+            },
+            include: {
+                sender: true
+            }
+        });
+
+        if (message === null) {
+            throw new NotFoundException();
+        }
+
+        return {
+            id: message.id,
+            text: message.text,
+            creationTime: +message.creationTime,
+            authorName: message.sender.login
+        };
     }
 
     public async add(
@@ -37,6 +65,8 @@ export class MessageService {
                 }
             }
         });
+
+        this.socketService.addMessage(message.id, topicId);
 
         return {
             id: message.id,

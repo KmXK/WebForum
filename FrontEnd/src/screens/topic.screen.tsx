@@ -6,19 +6,46 @@ import { getTopic } from '../services/topic.service';
 import TopicHeader from '../components/topic/header/topic-header.component';
 import MessageList from '../components/message/message-list/message-list.component';
 import MessageEditor from '../components/message/message-editor/message-editor.component';
+import { MessageModel } from '../models/message/message.model';
+import { connectSocket, socket } from '../socket';
+import { getMessage } from '../services/message.service';
 
 const TopicScreen = () => {
     const {topicId} = useParams<{ topicId: string }>();
     const [topic, setTopic] = useState<TopicDetailsModel>();
     const messagesEndRef = useRef<HTMLDivElement>(null)
+    const [messages, setMessages] = useState<MessageModel[]>([]);
+
+    function addMessage(message: MessageModel) {
+        setMessages(messages => messages.some(m => m.id === message.id) ? [...messages] : [...messages, message]);
+    }
+
+    function onMessageAdd(messageId: string) {
+        getMessage(messageId).then(addMessage);
+    }
 
     useEffect(() => {
         getTopic(topicId!).then(setTopic);
-    }, [topicId]);
+
+        function onConnect() {
+            socket.emit(`topic`, {topicId}, (data: string) => console.log(data));
+        }
+
+        return connectSocket([
+            ['connect', onConnect],
+            ['topic/message/add', onMessageAdd]
+        ]);
+    }, []);
+
+    useEffect(() => {
+        if (topic !== undefined) {
+            setMessages(topic.messages);
+        }
+    }, [topic]);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
-    }, [topic]);
+    }, [messages]);
 
     if (!topic) {
         return <Loader/>
@@ -27,10 +54,10 @@ const TopicScreen = () => {
     return (
         <div>
             <TopicHeader title={ topic.name }/>
-            <MessageList messages={ topic.messages }/>
+            <MessageList messages={ messages }/>
             <MessageEditor
                 topicId={ topic.id }
-                onMessageAdded={ m => setTopic({...topic, messages: [...topic?.messages, m]}) }/>
+                onMessageAdded={ addMessage }/>
             <div ref={ messagesEndRef }/>
         </div>
     );
