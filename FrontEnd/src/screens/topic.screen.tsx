@@ -8,7 +8,7 @@ import MessageList from '../components/message/message-list/message-list.compone
 import MessageEditor from '../components/message/message-editor/message-editor.component';
 import { MessageModel } from '../models/message/message.model';
 import { connectSocket, socket } from '../socket';
-import { getMessage } from '../services/message.service';
+import { deleteMessage, getMessage } from '../services/message.service';
 
 const TopicScreen = () => {
     const {topicId} = useParams<{ topicId: string }>();
@@ -18,6 +18,12 @@ const TopicScreen = () => {
 
     function addMessage(message: MessageModel) {
         setMessages(messages => messages.some(m => m.id === message.id) ? [...messages] : [...messages, message]);
+    }
+
+    function onDeleteMessage(message: MessageModel, startAnimation?: (callback?: () => void) => void) {
+        deleteMessage(message.id).then(() => {
+            startAnimation?.(() => setMessages(messages => messages.filter(m => m.id !== message.id)));
+        });
     }
 
     function onMessageAdd(messageId: string) {
@@ -54,10 +60,14 @@ const TopicScreen = () => {
     return (
         <div>
             <TopicHeader title={ topic.name }/>
-            <MessageList messages={ messages }/>
+            <MessageList
+                messages={ messages }
+                onMessageDeleted={ onDeleteMessage }
+            />
             <MessageEditor
                 topicId={ topic.id }
-                onMessageAdded={ addMessage }/>
+                onMessageAdded={ addMessage }
+            />
             <div ref={ messagesEndRef }/>
         </div>
     );
