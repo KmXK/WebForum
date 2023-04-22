@@ -36,6 +36,51 @@ export class MessageService {
         };
     }
 
+    public async delete(
+        messageId: string
+    ): Promise<void> {
+
+        const result = await this.prismaService.message.findUnique({
+            where: {
+                id: messageId
+            },
+            select: {
+                messageType: true
+            }
+        });
+
+        if (result === null) {
+            throw new NotFoundException();
+        }
+
+        const {messageType} = result;
+
+        await this.prismaService.$transaction([
+            messageType === MessageType.Topic
+                ? this.prismaService.topicMessage.delete({
+                    where: {
+                        id_messageType: {
+                            id: messageId,
+                            messageType: messageType
+                        }
+                    }
+                })
+                : this.prismaService.directMessage.delete({
+                    where: {
+                        id_messageType: {
+                            id: messageId,
+                            messageType: messageType
+                        }
+                    }
+                }),
+            this.prismaService.message.delete({
+                where: {
+                    id: messageId
+                }
+            })
+        ]);
+    }
+
     public async add(
         userId: string,
         topicId: string,

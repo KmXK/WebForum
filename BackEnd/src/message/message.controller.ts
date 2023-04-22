@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { GetCurrentUserId } from '../auth/decorators/getcurrentuserid.decorator';
-import { AuthGuard } from '../auth/auth.guard';
 
-@UseGuards(AuthGuard)
+//@UseGuards(AuthGuard)
 @Controller('message')
 export class MessageController {
     constructor(private messageService: MessageService) {
@@ -14,6 +13,13 @@ export class MessageController {
         @Param('id') messageId: string
     ) {
         return await this.messageService.get(messageId);
+    }
+
+    @Delete(':id')
+    public async delete(
+        @Param('id') messageId: string
+    ) {
+        return await this.messageService.delete(messageId);
     }
 
     @Post('')
