@@ -5,6 +5,7 @@ import { Button, Chip, Table, TableBody, TableCell, TableRow } from '@mui/materi
 import { format } from 'date-fns';
 import ReactMarkdown from 'react-markdown';
 import { DeleteOutline } from '@mui/icons-material';
+import DeletedText from '../../common/deleted-text.component';
 
 interface Props {
     message: MessageModel;
@@ -33,7 +34,11 @@ const Message: FC<Props> = ({message, onMessageDeleted}) => {
                         </TableCell>
 
                         <TableCell sx={ {paddingLeft: 5, width: '*'} }>
-                            <ReactMarkdown>{ message.text }</ReactMarkdown>
+                            {
+                                message.isDeleted
+                                    ? <DeletedText>Message was deleted.</DeletedText>
+                                    : <ReactMarkdown>{ message.text }</ReactMarkdown>
+                            }
                         </TableCell>
 
                         <TableCell sx={ {width: 15} }>

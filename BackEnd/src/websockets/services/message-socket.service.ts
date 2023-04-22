@@ -12,4 +12,11 @@ export class MessageSocketService {
             messageId
         });
     }
+
+    updateMessage(messageId: string, topicId: string) {
+        this.topicGateway.updateMessage({
+            topicId,
+            messageId
+        });
+    }
 }

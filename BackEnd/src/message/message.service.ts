@@ -3,6 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Message } from '@models';
 import { MessageType } from '@shared/enums';
 import { MessageSocketService } from '../websockets/services/message-socket.service';
+import Prisma from '@prisma/client';
 
 @Injectable()
 export class MessageService {
@@ -28,57 +29,32 @@ export class MessageService {
             throw new NotFoundException();
         }
 
-        return {
-            id: message.id,
-            text: message.text,
-            creationTime: +message.creationTime,
-            authorName: message.sender.login
-        };
+        return this.map(message);
     }
 
     public async delete(
         messageId: string
-    ): Promise<void> {
-
-        const result = await this.prismaService.message.findUnique({
+    ): Promise<Message> {
+        const message = await this.prismaService.message.update({
             where: {
                 id: messageId
             },
-            select: {
-                messageType: true
+            data: {
+                isDeleted: true
+            },
+            include: {
+                sender: true,
+                topicMessage: true
             }
         });
 
-        if (result === null) {
+        if (message?.topicMessage === null) {
             throw new NotFoundException();
         }
 
-        const {messageType} = result;
+        this.socketService.updateMessage(message.id, message.topicMessage.topicId);
 
-        await this.prismaService.$transaction([
-            messageType === MessageType.Topic
-                ? this.prismaService.topicMessage.delete({
-                    where: {
-                        id_messageType: {
-                            id: messageId,
-                            messageType: messageType
-                        }
-                    }
-                })
-                : this.prismaService.directMessage.delete({
-                    where: {
-                        id_messageType: {
-                            id: messageId,
-                            messageType: messageType
-                        }
-                    }
-                }),
-            this.prismaService.message.delete({
-                where: {
-                    id: messageId
-                }
-            })
-        ]);
+        return this.map(message);
     }
 
     public async add(
@@ -108,16 +84,24 @@ export class MessageService {
                         topicId: topicId
                     }
                 }
+            },
+            include: {
+                sender: true
             }
         });
 
         this.socketService.addMessage(message.id, topicId);
 
+        return this.map(message);
+    }
+
+    private map(message: Prisma.Message & { sender: Prisma.User }): Message {
         return {
             id: message.id,
-            text: message.text,
+            text: message.isDeleted ? '' : message.text,
             creationTime: +message.creationTime,
-            authorName: sender.login
+            authorName: message.sender.login,
+            isDeleted: message.isDeleted
         };
     }
 }

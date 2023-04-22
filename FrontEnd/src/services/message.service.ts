@@ -16,6 +16,7 @@ export async function getMessage(messageId: string): Promise<MessageModel> {
     return response.data;
 }
 
-export async function deleteMessage(messageId: string): Promise<void> {
-    await api.delete(`/api/message/${ messageId }`);
+export async function deleteMessage(messageId: string): Promise<MessageModel> {
+    const response = await api.delete(`/api/message/${ messageId }`);
+    return response.data;
 }

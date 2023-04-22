@@ -1,0 +1,8 @@
+.message-container {
+  opacity: 1;
+  transition: opacity 1s;
+
+  &.deleted {
+    opacity: 0;
+  }
+}

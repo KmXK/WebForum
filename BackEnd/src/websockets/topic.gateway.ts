@@ -36,6 +36,13 @@ export class TopicGateway implements OnGatewayDisconnect {
         this.server.to(topicId).emit('topic/message/add', messageId);
     }
 
+    updateMessage(
+        {topicId, messageId}: { topicId: string, messageId: string }
+    ) {
+        this.server.to(topicId).emit('topic/message/update', messageId);
+    }
+
+
     handleDisconnect(client: Socket) {
         client.rooms.forEach(r => client.leave(r));
     }

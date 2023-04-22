@@ -3,4 +3,5 @@ export interface Message {
     authorName: string;
     text: string;
     creationTime: number;
+    isDeleted: boolean;
 }

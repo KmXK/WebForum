@@ -42,7 +42,8 @@ export class TopicService {
                 id: m.message.id,
                 authorName: m.message.sender.login,
                 text: m.message.text,
-                creationTime: +m.message.creationTime
+                creationTime: +m.message.creationTime,
+                isDeleted: m.message.isDeleted
             }))
         };
     }

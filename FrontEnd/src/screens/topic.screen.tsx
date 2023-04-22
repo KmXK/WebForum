@@ -20,14 +20,16 @@ const TopicScreen = () => {
         setMessages(messages => messages.some(m => m.id === message.id) ? [...messages] : [...messages, message]);
     }
 
-    function onDeleteMessage(message: MessageModel, startAnimation?: (callback?: () => void) => void) {
-        deleteMessage(message.id).then(() => {
-            startAnimation?.(() => setMessages(messages => messages.filter(m => m.id !== message.id)));
-        });
-    }
-
     function onMessageAdd(messageId: string) {
         getMessage(messageId).then(addMessage);
+    }
+
+    function onMessageUpdate(messageId: string) {
+        getMessage(messageId).then((message) => setMessages(messages => {
+            const index = messages.findIndex(m => m.id === message.id);
+
+            return [...messages.slice(0, index), message, ...messages.slice(index + 1)];
+        }));
     }
 
     useEffect(() => {
@@ -39,7 +41,8 @@ const TopicScreen = () => {
 
         return connectSocket([
             ['connect', onConnect],
-            ['topic/message/add', onMessageAdd]
+            ['topic/message/add', onMessageAdd],
+            ['topic/message/update', onMessageUpdate]
         ]);
     }, []);
 
@@ -62,7 +65,7 @@ const TopicScreen = () => {
             <TopicHeader title={ topic.name }/>
             <MessageList
                 messages={ messages }
-                onMessageDeleted={ onDeleteMessage }
+                onMessageDeleted={ ({id}) => deleteMessage(id) }
             />
             <MessageEditor
                 topicId={ topic.id }
