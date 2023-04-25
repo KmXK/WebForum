@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Loader from '../components/common/loader.component';
 import { TopicDetailsModel } from '../models/topic/topic-details.model';
@@ -13,48 +13,43 @@ import { deleteMessage, getMessage } from '../services/message.service';
 const TopicScreen = () => {
     const {topicId} = useParams<{ topicId: string }>();
     const [topic, setTopic] = useState<TopicDetailsModel>();
-    const messagesEndRef = useRef<HTMLDivElement>(null)
     const [messages, setMessages] = useState<MessageModel[]>([]);
 
-    function addMessage(message: MessageModel) {
-        setMessages(messages => messages.some(m => m.id === message.id) ? [...messages] : [...messages, message]);
-    }
+    const addMessage = useCallback((message: MessageModel) => {
+        setMessages(messages => messages.some(m => m.id === message.id) ? [...messages] : [...messages, message])
+    }, [setMessages]);
 
-    function onMessageAdd(messageId: string) {
-        getMessage(messageId).then(addMessage);
-    }
+    const onMessageAdded = (messageId: string) => {
+        getMessage(messageId).then(m => addMessage(m));
+    };
 
-    function onMessageUpdate(messageId: string) {
-        getMessage(messageId).then((message) => setMessages(messages => {
-            const index = messages.findIndex(m => m.id === message.id);
-
-            return [...messages.slice(0, index), message, ...messages.slice(index + 1)];
-        }));
-    }
+    const onMessageUpdated = (messageId: string) => {
+        getMessage(messageId).then((message) =>
+            setMessages(messages => {
+                const index = messages.findIndex(m => m.id === message.id);
+                const newMessages = [...messages];
+                newMessages[index] = message;
+                return newMessages;
+            }));
+    };
 
     useEffect(() => {
-        getTopic(topicId!).then(setTopic);
+        getTopic(topicId!).then(t => {
+            setTopic(t);
+            setMessages(t.messages);
+        });
 
-        function onConnect() {
+        function onConnected() {
+            // connection to topic's room
             socket.emit(`topic`, {topicId}, (data: string) => console.log(data));
         }
 
         return connectSocket([
-            ['connect', onConnect],
-            ['topic/message/add', onMessageAdd],
-            ['topic/message/update', onMessageUpdate]
+            ['connect', () => onConnected()],
+            ['topic/message/add', m => onMessageAdded(m)],
+            ['topic/message/update', m => onMessageUpdated(m)]
         ]);
     }, []);
-
-    useEffect(() => {
-        if (topic !== undefined) {
-            setMessages(topic.messages);
-        }
-    }, [topic]);
-
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
-    }, [messages]);
 
     if (!topic) {
         return <Loader/>
@@ -69,9 +64,10 @@ const TopicScreen = () => {
             />
             <MessageEditor
                 topicId={ topic.id }
-                onMessageAdded={ addMessage }
+                onMessageAdded={ m => {
+                    addMessage(m);
+                } }
             />
-            <div ref={ messagesEndRef }/>
         </div>
     );
 };

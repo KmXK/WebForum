@@ -29,7 +29,10 @@ function LoginPage({}: Props) {
 
     return (
         <CenteredPaper elevation={ 4 }>
-            <Typography textAlign="center" variant="h5">
+            <Typography
+                textAlign="center"
+                variant="h5"
+            >
                 Login
             </Typography>
             <TextField
