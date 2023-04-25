@@ -1,0 +1,56 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Role {
+  id: Int!
+  name: String!
+}
+
+type User {
+  id: String!
+  login: String!
+  firstName: String
+  lastName: String
+  email: String
+  avatarUrl: String
+  roleName: Role!
+  role: Role!
+}
+
+type Message {
+  id: String!
+  author: User!
+  text: String!
+  creationTime: Int!
+  isDeleted: Boolean!
+}
+
+type Topic {
+  id: String!
+  name: String!
+  author: User!
+  messages: [Message!]!
+}
+
+type Section {
+  id: Int!
+  name: String!
+  creationTime: Int!
+  description: String
+  topics: [Topic!]!
+  children: [Section!]!
+  author: User!
+}
+
+type Query {
+  sections: [Section!]!
+  section(id: Int!): Section!
+  topics: [Topic!]!
+  topic(id: String!): Topic!
+  user(id: String!): User!
+  roles: [Role!]!
+  role(id: Int!): [Role!]!
+  messages: [Message!]!
+  message(id: String!): Message!
+}

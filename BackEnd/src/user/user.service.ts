@@ -1,24 +1,39 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@common/prisma';
-import { User } from '@prisma/client';
-import { UserIdentity } from './interfaces/user-identity.interface';
+import { ServiceBase } from '@common/ServiceBase';
 
 @Injectable()
-export class UserService {
-    constructor(private prismaService: PrismaService) {
+export class UserService extends ServiceBase {
+    constructor(
+        private readonly prismaService: PrismaService
+    ) {
+        super();
     }
 
-    async get(id: string): Promise<UserIdentity> {
-        const user = await this.prismaService.user.findUnique({
-            where: {
-                id
-            }
-        });
+    async findOne(id: string) {
+        return this.map(
+            await this.prismaService.user.findUnique({
+                where: {
+                    id
+                }
+            })
+        );
+    }
 
-        if (user === null) {
-            throw new NotFoundException();
-        }
+    async findByMessage(messageId: string) {
+        return this.map(
+            await this.prismaService.message.findUnique({
+                where: {
+                    id: messageId
+                },
+                select: {
+                    sender: true
+                }
+            }).sender()
+        );
+    }
 
+    protected mapElement(user: any): {} {
         return {
             id: user.id,
             login: user.login,
@@ -26,15 +41,7 @@ export class UserService {
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
-            role: user.roleId
-        };
-    }
-
-    getByLogin(login: string): Promise<User | null> {
-        return this.prismaService.user.findUnique({
-            where: {
-                login
-            }
-        });
+            roleId: user.roleId
+        }
     }
 }

@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
 import { CommonModule } from '@common/common.module';
-import { SectionModule } from './section';
-import { TopicModule } from './topic';
-import { MessageModule } from './message';
 import { AuthModule } from './auth/auth.module';
 import { WebsocketsModule } from './websockets/websockets.module';
-import { AutomapperModule } from '@automapper/nestjs';
-import { classes } from '@automapper/classes';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { GraphQLModule } from '@nestjs/graphql';
+import { SectionModule } from './section/section.module';
+import { TopicModule } from './topic/topic.module';
+import { MessageModule } from './message/message.module';
+import { UserModule } from './user/user.module';
+import { RoleModule } from './role/role.module';
 
 @Module({
     imports: [
@@ -16,9 +18,13 @@ import { classes } from '@automapper/classes';
         MessageModule,
         AuthModule,
         WebsocketsModule,
-        AutomapperModule.forRoot({
-            strategyInitializer: classes(),
+        GraphQLModule.forRoot<ApolloDriverConfig>({
+            driver: ApolloDriver,
+            playground: true,
+            autoSchemaFile: process.cwd() + '/src/schema.gql'
         }),
+        UserModule,
+        RoleModule,
     ]
 })
 export class AppModule {
