@@ -18,9 +18,10 @@ export class MessageController {
 
     @Delete(':id')
     public async delete(
+        @GetCurrentUserId() userId: string,
         @Param('id') messageId: string
     ) {
-        return await this.messageService.delete(messageId);
+        return await this.messageService.delete(userId, messageId);
     }
 
     @Post('')

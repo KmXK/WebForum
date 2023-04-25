@@ -5,6 +5,8 @@ import { TopicModule } from './topic';
 import { MessageModule } from './message';
 import { AuthModule } from './auth/auth.module';
 import { WebsocketsModule } from './websockets/websockets.module';
+import { AutomapperModule } from '@automapper/nestjs';
+import { classes } from '@automapper/classes';
 
 @Module({
     imports: [
@@ -13,7 +15,10 @@ import { WebsocketsModule } from './websockets/websockets.module';
         TopicModule,
         MessageModule,
         AuthModule,
-        WebsocketsModule
+        WebsocketsModule,
+        AutomapperModule.forRoot({
+            strategyInitializer: classes(),
+        }),
     ]
 })
 export class AppModule {

@@ -1,15 +1,17 @@
 import { PrismaService } from '@common/prisma';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Message } from '@models';
-import { MessageType } from '@shared/enums';
+import { MessageType, RoleType } from '@shared/enums';
 import { MessageSocketService } from '../websockets/services/message-socket.service';
 import Prisma from '@prisma/client';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class MessageService {
     constructor(
         private prismaService: PrismaService,
-        private socketService: MessageSocketService
+        private socketService: MessageSocketService,
+        private userService: UserService
     ) {
     }
 
@@ -33,6 +35,7 @@ export class MessageService {
     }
 
     public async delete(
+        userId: string,
         messageId: string
     ): Promise<Message> {
         const message = await this.prismaService.message.update({
@@ -50,6 +53,14 @@ export class MessageService {
 
         if (message?.topicMessage === null) {
             throw new NotFoundException();
+        }
+
+        const userIdentity = await this.userService.get(userId);
+
+        if (userIdentity.id !== message.senderId
+            && userIdentity.role !== RoleType.ADMIN
+        ) {
+            throw new ForbiddenException('You cannot delete this message.');
         }
 
         this.socketService.updateMessage(message.id, message.topicMessage.topicId);
