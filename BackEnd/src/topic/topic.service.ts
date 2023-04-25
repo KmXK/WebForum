@@ -40,6 +40,7 @@ export class TopicService {
             authorName: topic.author.login,
             messages: topic.topicMessages.map(m => ({
                 id: m.message.id,
+                authorId: m.message.senderId,
                 authorName: m.message.sender.login,
                 text: m.message.text,
                 creationTime: +m.message.creationTime,

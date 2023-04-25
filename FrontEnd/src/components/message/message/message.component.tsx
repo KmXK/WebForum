@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import Card from '../../common/card/card.component';
 import { MessageModel } from '../../../models/message/message.model';
 import { Button, Chip, Table, TableBody, TableCell, TableRow } from '@mui/material';
@@ -6,6 +6,8 @@ import { format } from 'date-fns';
 import ReactMarkdown from 'react-markdown';
 import { DeleteOutline } from '@mui/icons-material';
 import DeletedText from '../../common/deleted-text.component';
+import useUser from '../../../hooks/useUser.hook';
+import { User } from '../../../models/user/user.model';
 
 interface Props {
     message: MessageModel;
@@ -13,6 +15,12 @@ interface Props {
 }
 
 const Message: FC<Props> = ({message, onMessageDeleted}) => {
+    const user: User = useUser()!;
+    const [canBeDeleted, setCanBeDeleted] = useState(
+        !message.isDeleted
+        && (user.role === 'Admin'
+            || user.userId === message.authorId));
+
     return (
         <Card
             isClickable={ false }
@@ -40,16 +48,19 @@ const Message: FC<Props> = ({message, onMessageDeleted}) => {
                                     : <ReactMarkdown>{ message.text }</ReactMarkdown>
                             }
                         </TableCell>
-
                         <TableCell sx={ {width: 15} }>
-                            <Button
-                                variant="outlined"
-                                color="error"
-                                sx={ {minWidth: 30, padding: 1, borderRadius: 3} }
-                                onClick={ onMessageDeleted }
-                            >
-                                <DeleteOutline/>
-                            </Button>
+                            { canBeDeleted &&
+                                <Button
+                                    variant="outlined"
+                                    color="error"
+                                    sx={ {minWidth: 30, padding: 1, borderRadius: 3} }
+                                    onClick={ () => {
+                                        setCanBeDeleted(false);
+                                        onMessageDeleted?.();
+                                    } }
+                                >
+                                    <DeleteOutline/>
+                                </Button> }
                         </TableCell>
                     </TableRow>
                 </TableBody>

@@ -73,15 +73,7 @@ export class MessageService {
         topicId: string,
         text: string
     ): Promise<Message> {
-        const sender = await this.prismaService.user.findUnique({
-            where: {
-                id: userId
-            }
-        });
-
-        if (sender == null) {
-            throw new NotFoundException('User with specified id was not found');
-        }
+        const sender = await this.userService.get(userId);
 
         const message = await this.prismaService.message.create({
             data: {
@@ -111,6 +103,7 @@ export class MessageService {
             id: message.id,
             text: message.isDeleted ? '' : message.text,
             creationTime: +message.creationTime,
+            authorId: message.senderId,
             authorName: message.sender.login,
             isDeleted: message.isDeleted
         };
