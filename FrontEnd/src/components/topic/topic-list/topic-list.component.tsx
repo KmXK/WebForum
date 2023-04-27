@@ -1,17 +1,20 @@
 import React, { FC } from 'react';
-import { TopicModel } from '../../../models/topic/topic.model';
-import Topic from '../topic/topic.component';
+import * as Models from '../../../models/topic/topic.model';
 import { Stack } from '@mui/material';
+import TopicListItem from '../topic/topic-list-item.component';
 
 interface Props {
-    topics: TopicModel[]
+    topics: Models.Topic[]
 }
 
 const TopicList: FC<Props> = ({topics}) => {
     return (
         <div>
             <Stack spacing={ 2 }>
-                { topics.map(t => <Topic key={ t.id } topic={ t }/>) }
+                { topics.map(t => <TopicListItem
+                    key={ t.id }
+                    topic={ t }
+                />) }
             </Stack>
         </div>
     );

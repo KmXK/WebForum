@@ -1,4 +1,4 @@
-export interface TopicModel {
+export interface Topic {
     id: string;
     name: string;
 }
