@@ -1,5 +1,4 @@
 import React, { FC, useState } from 'react';
-import { SectionTreeModel } from '../../../models/section/section-tree.model';
 import styles from './section.module.scss'
 import SectionList from '../section-list.component';
 import { Collapse } from '@mui/material';
@@ -7,16 +6,17 @@ import { ExpandLess } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 import Card from '../../common/card/card.component';
+import { SectionListItem } from '../../../models/section/section-list-item.model';
 
 interface Props {
-    section: SectionTreeModel
+    section: SectionListItem
 }
 
 const Section: FC<Props> = ({section}) => {
     const navigate = useNavigate();
     const [open, setOpen] = useState(true);
 
-    const hasNestedSections = section.sections.length !== 0;
+    const hasNestedSections = section.children.length !== 0;
 
     return (
         <div>
@@ -44,7 +44,7 @@ const Section: FC<Props> = ({section}) => {
             { hasNestedSections &&
                 <Collapse in={ open }>
                     <div className={ styles.childSectionsContainer }>
-                        <SectionList sections={ section.sections }/>
+                        <SectionList sections={ section.children }/>
                     </div>
                 </Collapse>
             }

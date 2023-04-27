@@ -7,7 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import { DeleteOutline } from '@mui/icons-material';
 import DeletedText from '../../common/deleted-text.component';
 import useUser from '../../../hooks/useUser.hook';
-import { User } from '../../../models/user/user.model';
+import { AuthUser } from '../../../models/auth/auth-user.model';
 
 interface Props {
     message: MessageModel;
@@ -15,7 +15,7 @@ interface Props {
 }
 
 const Message: FC<Props> = ({message, onMessageDeleted}) => {
-    const user: User = useUser()!;
+    const user: AuthUser = useUser()!;
     const [canBeDeleted, setCanBeDeleted] = useState(
         !message.isDeleted
         && (user.role === 'Admin'

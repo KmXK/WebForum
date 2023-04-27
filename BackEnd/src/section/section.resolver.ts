@@ -3,12 +3,15 @@ import { SectionService } from './section.service';
 import { Section } from './entities/section.entity';
 import { Topic } from '../topic/entities/topic.entity';
 import { TopicService } from '../topic/topic.service';
+import { User } from '../user/entities/user.entity';
+import { UserService } from '../user/user.service';
 
 @Resolver(() => Section)
 export class SectionResolver {
     constructor(
         private readonly sectionService: SectionService,
-        private readonly topicService: TopicService
+        private readonly topicService: TopicService,
+        private readonly userService: UserService
     ) {
     }
 
@@ -30,5 +33,10 @@ export class SectionResolver {
     @ResolveField(() => [Section])
     children(@Parent() section: Section) {
         return this.sectionService.findChildren(section.id);
+    }
+
+    @ResolveField(() => User)
+    author(@Parent() section: Section) {
+        return this.userService.findBySection(section.id);
     }
 }

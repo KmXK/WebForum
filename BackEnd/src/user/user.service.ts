@@ -33,6 +33,19 @@ export class UserService extends ServiceBase {
         );
     }
 
+    async findBySection(sectionId: number) {
+        return this.map(
+            await this.prismaService.section.findUnique({
+                where: {
+                    id: sectionId
+                },
+                select: {
+                    author: true
+                }
+            }).author()
+        );
+    }
+
     protected mapElement(user: any): {} {
         return {
             id: user.id,

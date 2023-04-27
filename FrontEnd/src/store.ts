@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { makeAutoObservable } from 'mobx';
-import { User } from './models/user/user.model';
+import { AuthUser } from './models/auth/auth-user.model';
 import { AuthResponseModel } from './models/auth/auth-response.model';
 import AuthService from './services/auth.service';
 
 export default class Store {
-    user: User | null = null;
+    user: AuthUser | null = null;
     isAuth = false;
 
     constructor() {
@@ -16,7 +16,7 @@ export default class Store {
         this.isAuth = isAuth;
     }
 
-    setUser(user: User | null) {
+    setUser(user: AuthUser | null) {
         this.user = user;
     }
 
