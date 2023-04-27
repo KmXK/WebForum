@@ -18,6 +18,7 @@ const documents = {
     "\n    #graphql\n    query GetSection($id: Int!) {\n        section(id: $id) {\n            id\n            name\n            children {\n                id\n                name\n                description\n                author {\n                    id\n                    login\n                }\n            }\n            topics {\n                id\n                name\n                author {\n                    id\n                    login\n                }\n            }\n        }\n    }\n": types.GetSectionDocument,
     "\n    #graphql\n    query GetTopic($id: String!) {\n        topic(id: $id) {\n            id\n            name\n            messages {\n                id\n                author {\n                    id\n                    login\n                }\n                creationTime\n                isDeleted\n                text\n            }\n        }\n    }\n": types.GetTopicDocument,
     "\n    #graphql\n    mutation DeleteMessage($messageId: String!) {\n        deleteMessage(messageId: $messageId) {\n            id\n            text\n            creationTime\n            isDeleted\n            author {\n                id\n                login\n            }\n        }\n    }\n": types.DeleteMessageDocument,
+    "\n    #graphql\n    query GetMessage($id: String!) {\n        message(id: $id) {\n            id\n            author {\n                id\n                login\n            }\n            isDeleted\n            creationTime\n            text\n        }\n    }\n": types.GetMessageDocument,
 };
 
 /**
@@ -54,6 +55,10 @@ export function gql(source: "\n    #graphql\n    query GetTopic($id: String!) {\
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n    #graphql\n    mutation DeleteMessage($messageId: String!) {\n        deleteMessage(messageId: $messageId) {\n            id\n            text\n            creationTime\n            isDeleted\n            author {\n                id\n                login\n            }\n        }\n    }\n"): (typeof documents)["\n    #graphql\n    mutation DeleteMessage($messageId: String!) {\n        deleteMessage(messageId: $messageId) {\n            id\n            text\n            creationTime\n            isDeleted\n            author {\n                id\n                login\n            }\n        }\n    }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n    #graphql\n    query GetMessage($id: String!) {\n        message(id: $id) {\n            id\n            author {\n                id\n                login\n            }\n            isDeleted\n            creationTime\n            text\n        }\n    }\n"): (typeof documents)["\n    #graphql\n    query GetMessage($id: String!) {\n        message(id: $id) {\n            id\n            author {\n                id\n                login\n            }\n            isDeleted\n            creationTime\n            text\n        }\n    }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

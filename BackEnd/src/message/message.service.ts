@@ -87,6 +87,8 @@ export class MessageService extends ServiceBase {
             }
         });
 
+        this.socketService.addMessage(message.id, message.topicId);
+
         return this.map(message);
     }
 
@@ -142,6 +144,9 @@ export class MessageService extends ServiceBase {
                 message: true
             }
         });
+
+        console.log(deletedMessage);
+        this.socketService.updateMessage(message.id, message.topicId);
 
         return this.map(deletedMessage);
     }
