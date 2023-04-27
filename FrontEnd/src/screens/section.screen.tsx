@@ -3,9 +3,11 @@ import { Navigate, useParams } from 'react-router-dom';
 import Loader from '../components/common/loader.component';
 import SectionList from '../components/section/section-list.component';
 import TopicList from '../components/topic/topic-list/topic-list.component';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
+import { gql } from '../__generated__';
 
-const GET_SECTION = gql`
+const GET_SECTION = gql(`
+    #graphql
     query GetSection($id: Int!) {
         section(id: $id) {
             id
@@ -29,37 +31,12 @@ const GET_SECTION = gql`
             }
         }
     }
-`;
-
-type GetSectionResult = {
-    section: {
-        id: number;
-        name: string;
-        description: string;
-        children: Array<{
-            id: number;
-            name: string;
-            description: string;
-            author: {
-                id: string;
-                login: string;
-            }
-        }>;
-        topics: Array<{
-            id: string;
-            name: string;
-            author: {
-                id: string;
-                login: string;
-            }
-        }>;
-    }
-}
+`);
 
 const SectionScreen = () => {
     const {sectionId} = useParams<{ sectionId: string }>();
 
-    const {data, loading, error} = useQuery<GetSectionResult>(GET_SECTION, {
+    const {data, loading, error} = useQuery(GET_SECTION, {
         variables: {
             id: +(sectionId || 0)
         }

@@ -5,11 +5,12 @@ import TopicHeader from '../components/topic/header/topic-header.component';
 import MessageList from '../components/message/message-list/message-list.component';
 import MessageEditor from '../components/message/message-editor/message-editor.component';
 import { MessageModel } from '../models/message/message.model';
-import { deleteMessage } from '../services/message.service';
-import { gql, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { NavigateBefore } from '@mui/icons-material';
+import { gql } from '../__generated__';
 
-const GET_TOPIC = gql`
+const GET_TOPIC = gql(`
+    #graphql
     query GetTopic($id: String!) {
         topic(id: $id) {
             id
@@ -26,33 +27,38 @@ const GET_TOPIC = gql`
             }
         }
     }
-`;
+`);
 
-type GetTopicResult = {
-    topic: {
-        id: string;
-        name: string;
-        messages: Array<{
-            id: string;
-            author: {
-                id: string;
-                login: string;
-            };
-            creationTime: string;
-            isDeleted: boolean;
-            text: string;
-        }>
+const DELETE_MESSAGE = gql(`
+    #graphql
+    mutation DeleteMessage($messageId: String!) {
+        deleteMessage(messageId: $messageId) {
+            id
+            text
+            creationTime
+            isDeleted
+            author {
+                id
+                login
+            }
+        }
     }
-}
+`);
 
 const TopicScreen = () => {
     const {topicId} = useParams<{ topicId: string }>();
 
-    const {data, loading, error} = useQuery<GetTopicResult>(GET_TOPIC, {
+    if (topicId === undefined) {
+        return <NavigateBefore/>
+    }
+
+    const {data, loading, error} = useQuery(GET_TOPIC, {
         variables: {
             id: topicId
         }
     });
+
+    const [deleteMessage, {data: deletedMessage}] = useMutation(DELETE_MESSAGE);
 
     const [messages, setMessages] = useState<MessageModel[]>([]);
 
@@ -96,6 +102,18 @@ const TopicScreen = () => {
         setMessages(data?.topic.messages || []);
     }, [data]);
 
+    const addMessage = (message: MessageModel) => {
+        setMessages(messages => [...messages, message]);
+    };
+
+    const updateMessage = (message: MessageModel) => {
+        setMessages(messages => {
+            const index = messages.findIndex(m => m.id === message.id);
+
+            return [...messages.slice(0, index), message, ...messages.slice(index + 1)];
+        });
+    }
+
     if (loading) {
         return <Loader/>
     }
@@ -111,14 +129,26 @@ const TopicScreen = () => {
             <TopicHeader title={ topic.name }/>
             <MessageList
                 messages={ messages }
-                onMessageDeleted={ ({id}) => deleteMessage(id) }
+                onMessageDeleted={ ({id}) => deleteMessage({
+                    variables: {
+                        messageId: id
+                    }
+                }).then(message => {
+                    if (!message.data?.deleteMessage) {
+                        return;
+                    }
+
+                    updateMessage(message.data.deleteMessage);
+                }) }
             />
-            <MessageEditor
-                topicId={ topic.id }
-                onMessageAdded={ m => {
-                    // addMessage(m);
-                } }
-            />
+            {
+                <MessageEditor
+                    topicId={ topic.id }
+                    onMessageAdded={ m => {
+                        addMessage(m);
+                    } }
+                />
+            }
         </div>
     );
 };

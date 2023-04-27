@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react';
 import SectionList from '../components/section/section-list.component';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import LoaderComponent from '../components/common/loader.component';
-//import { gql } from '../__generated__';
+import { gql } from '../__generated__';
 import { SectionListItem } from '../models/section/section-list-item.model';
 
-const GET_SECTIONS = gql`
+const GET_SECTIONS = gql(`
+    #graphql
     query GetSections {
         sections {
             id
@@ -19,25 +20,10 @@ const GET_SECTIONS = gql`
             }
         }
     }
-`;
-
-type GetSectionsResult = {
-    sections: Array<{
-        id: number;
-        name: string;
-        description?: string;
-        author: {
-            id: string;
-            login: string;
-        },
-        children: Array<{
-            id: number
-        }>;
-    }>;
-}
+`);
 
 const SectionListScreen = () => {
-    const {data: plainSections, loading} = useQuery<GetSectionsResult>(GET_SECTIONS);
+    const {data: plainSections, loading} = useQuery(GET_SECTIONS);
 
     const sections = useMemo(() => {
         if (plainSections === undefined) {

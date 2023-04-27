@@ -1,9 +1,9 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { PayloadDto } from '../dto/payload.dto';
+import { GqlExecutionContext } from '@nestjs/graphql';
 
-export const GetCurrentUser = createParamDecorator(
-    (data: keyof PayloadDto | undefined, context: ExecutionContext) => {
-        const request = context.switchToHttp().getRequest();
-        return request.payload;
-    }
+export const CurrentUser = createParamDecorator(
+    (data: unknown, context: ExecutionContext) => {
+        const ctx = GqlExecutionContext.create(context);
+        return ctx.getContext().req.user;
+    },
 );

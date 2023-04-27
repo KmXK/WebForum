@@ -3,54 +3,64 @@
 # ------------------------------------------------------
 
 type Role {
-  id: Int!
-  name: String!
+    id: Int!
+    name: String!
 }
 
 type User {
-  id: String!
-  login: String!
-  firstName: String
-  lastName: String
-  email: String
-  avatarUrl: String
-  roleName: Role!
-  role: Role!
+    id: String!
+    login: String!
+    firstName: String
+    lastName: String
+    email: String
+    avatarUrl: String
+    roleName: Role!
+    role: Role!
 }
 
 type Message {
-  id: String!
-  author: User!
-  text: String!
-  creationTime: String!
-  isDeleted: Boolean!
+    id: String!
+    author: User!
+    text: String!
+    creationTime: String!
+    isDeleted: Boolean!
 }
 
 type Topic {
-  id: String!
-  name: String!
-  author: User!
-  messages: [Message!]!
+    id: String!
+    name: String!
+    author: User!
+    messages: [Message!]!
 }
 
 type Section {
-  id: Int!
-  name: String!
-  creationTime: Int!
-  description: String
-  topics: [Topic!]!
-  children: [Section!]!
-  author: User!
+    id: Int!
+    name: String!
+    creationTime: Int!
+    description: String
+    topics: [Topic!]!
+    children: [Section!]!
+    author: User!
 }
 
 type Query {
-  sections: [Section!]!
-  section(id: Int!): Section!
-  topics: [Topic!]!
-  topic(id: String!): Topic!
-  user(id: String!): User!
-  roles: [Role!]!
-  role(id: Int!): [Role!]!
-  messages: [Message!]!
-  message(id: String!): Message!
+    sections: [Section!]!
+    section(id: Int!): Section!
+    topics: [Topic!]!
+    topic(id: String!): Topic!
+    user(id: String!): User!
+    roles: [Role!]!
+    role(id: Int!): [Role!]!
+    messages: [Message!]!
+    message(id: String!): Message!
+}
+
+type Mutation {
+    createMessage(createMessage: CreateMessageInput!): Message!
+    deleteMessage(messageId: String!): Message!
+}
+
+input CreateMessageInput {
+    text: String!
+    topicId: String!
 }
