@@ -19,7 +19,7 @@ const Message: FC<Props> = ({message, onMessageDeleted}) => {
     const [canBeDeleted, setCanBeDeleted] = useState(
         !message.isDeleted
         && (user.role === 'Admin'
-            || user.userId === message.authorId));
+            || user.userId === message.author.id));
 
     return (
         <Card
@@ -37,8 +37,8 @@ const Message: FC<Props> = ({message, onMessageDeleted}) => {
                             align={ 'center' }
                             sx={ {borderRight: 1} }
                         >
-                            <div>{ message.authorName }</div>
-                            <Chip label={ format(message.creationTime, 'yyyy-MM-dd hh:mm:ss') }/>
+                            <div>{ message.author.login }</div>
+                            <Chip label={ format(+message.creationTime, 'yyyy-MM-dd hh:mm:ss') }/>
                         </TableCell>
 
                         <TableCell sx={ {paddingLeft: 5, width: '*'} }>

@@ -1,8 +1,9 @@
+import { User } from '../user/user.model';
+
 export interface MessageModel {
     id: string;
-    authorId: string;
-    authorName: string;
+    author: User;
     text: string;
-    creationTime: number;
+    creationTime: string;
     isDeleted: boolean;
 }

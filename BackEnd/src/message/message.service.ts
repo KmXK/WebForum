@@ -66,7 +66,7 @@ export class MessageService extends ServiceBase {
             text: m.message.text,
             isDeleted: m.message.isDeleted,
             authorId: m.message.senderId,
-            creationTime: +m.message.creationTime
+            creationTime: (+m.message.creationTime).toString()
         }
     }
 }

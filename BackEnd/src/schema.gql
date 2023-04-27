@@ -22,7 +22,7 @@ type Message {
   id: String!
   author: User!
   text: String!
-  creationTime: Int!
+  creationTime: String!
   isDeleted: Boolean!
 }
 

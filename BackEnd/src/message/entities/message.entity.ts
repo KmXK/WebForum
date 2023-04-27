@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { User } from '../../user/entities/user.entity';
 
 @ObjectType()
@@ -14,8 +14,8 @@ export class Message {
     @Field()
     text: string;
 
-    @Field(() => Int)
-    creationTime: number;
+    @Field(() => String)
+    creationTime: string;
 
     @Field()
     isDeleted: boolean;
