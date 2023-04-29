@@ -49,7 +49,7 @@ const Message: FC<Props> = ({message, onMessageDeleted}) => {
                             }
                         </TableCell>
                         <TableCell sx={ {width: 15} }>
-                            { canBeDeleted &&
+                            { canBeDeleted && !message.isDeleted &&
                                 <Button
                                     variant="outlined"
                                     color="error"

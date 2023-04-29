@@ -88,7 +88,7 @@ export class AuthService {
 
         return {
             accessToken: this.jwtService.sign(payload, {
-                expiresIn: 60,
+                expiresIn: 60 * 60 * 60,
                 secret: process.env.AT_SECRET
             }),
             refreshToken: this.jwtService.sign(payload, {

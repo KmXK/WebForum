@@ -75,10 +75,11 @@ const TopicScreen = () => {
         }
     });
 
-    const [getMessage, {refetch, called}] = useLazyQuery(GET_MESSAGE);
-    console.log(called);
+    const [getMessage] = useLazyQuery(GET_MESSAGE, {
+        fetchPolicy: 'network-only'
+    });
 
-    const [deleteMessage, {data: deletedMessage}] = useMutation(DELETE_MESSAGE);
+    const [deleteMessage] = useMutation(DELETE_MESSAGE);
 
     const [messages, setMessages] = useState<MessageModel[]>([]);
 
@@ -105,40 +106,58 @@ const TopicScreen = () => {
             return;
         }
 
+        console.log('add message');
+
         setMessages(messages => messages.some(m => m.id === message.id) ? [...messages] : [...messages, message]);
     };
 
     const updateMessage = (message: MessageModel) => {
         setMessages(messages => {
             const index = messages.findIndex(m => m.id === message.id);
+            console.log(messages);
+            const newMessages = [...messages];
+            newMessages[index] = message;
 
-            return [...messages.slice(0, index), message, ...messages.slice(index + 1)];
+            console.log(newMessages);
+            return newMessages;
+            // return [...messages.slice(0, index), message, ...messages.slice(index + 1, messages.length)];
         });
     }
 
     useEffect(() => {
+        getMessage({variables: {id: '1'}}).then(m => console.log(m));
+        getMessage({variables: {id: '1'}}).then(console.log);
+
         function onConnected() {
             // connection to topic's room
-            socket.emit(`topic`, {topicId}, (data: string) => console.log(data));
+            socket.emit(`topic`, {topicId});
         }
 
         return connectSocket([
             ['connect', () => onConnected()],
-            ['topic/message/add', m => getMessage({variables: {id: m}}).then(m => addMessage(m.data?.message))],
-            ['topic/message/update', m => {
-                const me = getMessage({variables: {id: m}});
-                console.log(me);
-                me.then(m => updateMessage(m.data?.message));
+            ['topic/message/add', id =>
+                getMessage({variables: {id: id}}).then(m => {
+                    addMessage(m.data?.message!);
+                })],
+            ['topic/message/update', id => {
+                console.log('update');
+                getMessage({variables: {id: id}}).then(m =>
+                    updateMessage(m.data?.message!));
             }]
         ]);
     }, []);
 
     useEffect(() => {
-        const messages = [...(data?.topic.messages || [])];
-        messages.sort((a, b) => Number(a.creationTime) - Number(b.creationTime));
         console.log(messages);
-        setMessages(messages);
-    }, [data]);
+    }, [messages]);
+
+    useEffect(() => {
+        if (!loading && messages.length === 0) {
+            const messages = [...(data?.topic.messages || [])];
+            messages.sort((a, b) => Number(a.creationTime) - Number(b.creationTime));
+            setMessages(messages);
+        }
+    }, [loading]);
 
     if (loading) {
         return <Loader/>
@@ -159,22 +178,15 @@ const TopicScreen = () => {
                     variables: {
                         messageId: id
                     }
-                }).then(message => {
-                    if (!message.data?.deleteMessage) {
-                        return;
-                    }
-
-                    updateMessage(message.data.deleteMessage);
                 }) }
             />
-            {
-                <MessageEditor
-                    topicId={ topic.id }
-                    onMessageAdded={ m => {
-                        addMessage(m);
-                    } }
-                />
-            }
+            <MessageEditor
+                topicId={ topic.id }
+                onMessageAdded={ m => {
+                    console.log(m);
+                    addMessage(m);
+                } }
+            />
         </div>
     );
 };
