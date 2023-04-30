@@ -6,7 +6,7 @@ import AuthService from './services/auth.service';
 
 export default class Store {
     user: AuthUser | null = null;
-    isAuth = false;
+    isAuth?: boolean;
 
     constructor() {
         makeAutoObservable(this);
@@ -51,9 +51,10 @@ export default class Store {
                     withCredentials: true
                 });
             localStorage.setItem('token', response.data.accessToken);
-            this.isAuth = true;
-            this.user = response.data.user;
+            this.setIsAuth(true);
+            this.setUser(response.data.user);
         } catch (error: any) {
+            this.setIsAuth(false);
             console.log(error.response?.data?.message);
         }
     }

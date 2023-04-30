@@ -1,8 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Header from '../components/header/header.component';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { useReturnUrl } from '../contexts/return-url.context';
 
 const HomeScreen = () => {
+    const {returnUrl} = useReturnUrl();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (returnUrl) {
+            navigate(returnUrl);
+        }
+    }, []);
+
     return (
         <div>
             <Header/>

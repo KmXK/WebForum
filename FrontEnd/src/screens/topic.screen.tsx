@@ -125,9 +125,6 @@ const TopicScreen = () => {
     }
 
     useEffect(() => {
-        getMessage({variables: {id: '1'}}).then(m => console.log(m));
-        getMessage({variables: {id: '1'}}).then(console.log);
-
         function onConnected() {
             // connection to topic's room
             socket.emit(`topic`, {topicId});

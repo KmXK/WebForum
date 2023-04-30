@@ -13,10 +13,12 @@ export const userRouter = createBrowserRouter(
             children: [
                 {
                     path: '/',
-                    element: <Navigate to="/sections" replace={ false }/>,
+                    element: <Navigate
+                        to={ '/sections' }
+                        replace={ true }
+                    />
                 },
                 {
-                    index: true,
                     path: '/sections',
                     element: <SectionListScreen/>
                 },
@@ -32,7 +34,10 @@ export const userRouter = createBrowserRouter(
         },
         {
             path: '*',
-            element: <Navigate to={ '/' }/>
+            element: <Navigate
+                to={ '/sections' }
+                replace={ false }
+            />
         }
     ]
 )
