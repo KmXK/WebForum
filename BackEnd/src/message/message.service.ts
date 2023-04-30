@@ -75,7 +75,7 @@ export class MessageService extends ServiceBase {
                 message: {
                     create: {
                         text: createMessageInput.text,
-                        creationTime: new Date(Date.now()),
+                        creationTime: new Date(),
                         isDeleted: false,
                         senderId: userId,
                         messageType: MessageType.Topic

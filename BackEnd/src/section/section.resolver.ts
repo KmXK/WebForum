@@ -45,7 +45,7 @@ export class SectionResolver {
     }
 
     @UseGuards(GqlAuthGuard)
-    @Mutation(() => Section, {name: 'createSection'})
+    @Mutation(() => Section)
     createSection(
         @CurrentUserId() userId: string,
         @Args('input') input: CreateSectionInput

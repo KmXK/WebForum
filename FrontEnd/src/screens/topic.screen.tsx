@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import Loader from '../components/common/loader.component';
 import TopicHeader from '../components/topic/header/topic-header.component';
 import MessageList from '../components/message/message-list/message-list.component';
-import MessageEditor from '../components/message/message-editor/message-editor.component';
+import MessageSubmitter from '../components/message/message-editor/message-submitter.component';
 import { MessageModel } from '../models/message/message.model';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { NavigateBefore } from '@mui/icons-material';
@@ -106,21 +106,15 @@ const TopicScreen = () => {
             return;
         }
 
-        console.log('add message');
-
         setMessages(messages => messages.some(m => m.id === message.id) ? [...messages] : [...messages, message]);
     };
 
     const updateMessage = (message: MessageModel) => {
         setMessages(messages => {
             const index = messages.findIndex(m => m.id === message.id);
-            console.log(messages);
             const newMessages = [...messages];
             newMessages[index] = message;
-
-            console.log(newMessages);
             return newMessages;
-            // return [...messages.slice(0, index), message, ...messages.slice(index + 1, messages.length)];
         });
     }
 
@@ -137,16 +131,11 @@ const TopicScreen = () => {
                     addMessage(m.data?.message!);
                 })],
             ['topic/message/update', id => {
-                console.log('update');
                 getMessage({variables: {id: id}}).then(m =>
                     updateMessage(m.data?.message!));
             }]
         ]);
     }, []);
-
-    useEffect(() => {
-        console.log(messages);
-    }, [messages]);
 
     useEffect(() => {
         if (!loading && messages.length === 0) {
@@ -177,10 +166,9 @@ const TopicScreen = () => {
                     }
                 }) }
             />
-            <MessageEditor
+            <MessageSubmitter
                 topicId={ topic.id }
                 onMessageAdded={ m => {
-                    console.log(m);
                     addMessage(m);
                 } }
             />

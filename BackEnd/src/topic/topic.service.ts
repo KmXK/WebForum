@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@common/prisma';
 import { ServiceBase } from '@common/ServiceBase';
+import { CreateTopicInput } from './dto/create-topic.input';
+import { MessageType } from '@shared/enums';
 
 @Injectable()
 export class TopicService extends ServiceBase {
@@ -36,11 +38,38 @@ export class TopicService extends ServiceBase {
         );
     }
 
+    async createTopic(userId: string, createTopicInput: CreateTopicInput) {
+        return this.map(
+            await this.prismaService.topic.create({
+                data: {
+                    name: createTopicInput.name,
+                    sectionId: createTopicInput.sectionId,
+                    authorId: userId,
+                    isImportant: createTopicInput.isImportant,
+                    creationTime: new Date(),
+                    topicMessages: {
+                        create: {
+                            message: {
+                                create: {
+                                    senderId: userId,
+                                    text: createTopicInput.messageText,
+                                    messageType: MessageType.Topic,
+                                    creationTime: new Date()
+                                }
+                            }
+                        }
+                    }
+                },
+            })
+        );
+    }
+
     protected mapElement(topic: any) {
         return {
             id: topic.id,
             name: topic.name,
-            authorId: topic.authorId
+            authorId: topic.authorId,
+            creationTime: topic.creationTime
         };
     }
 }

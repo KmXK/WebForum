@@ -2,12 +2,12 @@ import React, { FC, useState } from 'react';
 import Card from '../../common/card/card.component';
 import { MessageModel } from '../../../models/message/message.model';
 import { Button, Chip, Table, TableBody, TableCell, TableRow } from '@mui/material';
-import { format } from 'date-fns';
 import ReactMarkdown from 'react-markdown';
 import { DeleteOutline } from '@mui/icons-material';
 import DeletedText from '../../common/deleted-text.component';
 import useUser from '../../../hooks/useUser.hook';
 import { AuthUser } from '../../../models/auth/auth-user.model';
+import { getDateTime } from '../../../services/date.service';
 
 interface Props {
     message: MessageModel;
@@ -38,7 +38,7 @@ const Message: FC<Props> = ({message, onMessageDeleted}) => {
                             sx={ {borderRight: 1} }
                         >
                             <div>{ message.author.login }</div>
-                            <Chip label={ format(+message.creationTime, 'yyyy-MM-dd hh:mm:ss') }/>
+                            <Chip label={ getDateTime(+message.creationTime) }/>
                         </TableCell>
 
                         <TableCell sx={ {paddingLeft: 5, width: '*'} }>

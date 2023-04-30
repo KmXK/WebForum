@@ -56,7 +56,8 @@ export class SectionService extends ServiceBase {
                 name: input.name,
                 description: input.description,
                 authorId: userId,
-                parentSectionId: input.parentSectionId
+                parentSectionId: input.parentSectionId,
+                creationTime: new Date(Date.now())
             }
         })
     }

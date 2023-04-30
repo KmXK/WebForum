@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import * as Models from '../../../models/topic/topic.model';
 import { Stack } from '@mui/material';
 import TopicListItem from '../topic/topic-list-item.component';
@@ -8,10 +8,16 @@ interface Props {
 }
 
 const TopicList: FC<Props> = ({topics}) => {
+    const sortedTopics = useMemo(() => {
+        const sortedTopics = [...topics];
+        sortedTopics.sort((a, b) => +b.creationTime - +a.creationTime);
+        return sortedTopics;
+    }, [topics]);
+
     return (
         <div>
             <Stack spacing={ 2 }>
-                { topics.map(t => <TopicListItem
+                { sortedTopics.map(t => <TopicListItem
                     key={ t.id }
                     topic={ t }
                 />) }

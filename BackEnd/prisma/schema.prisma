@@ -25,7 +25,7 @@ model Complaint {
   accusedId     String            @db.UniqueIdentifier
   description   String            @db.NVarChar(1024)
   messageId     String?           @db.UniqueIdentifier
-  creationTime  DateTime          @db.DateTime
+  creationTime  DateTime          @db.DateTime @default(now())
   answers       ComplaintAnswer[]
   message       Message?          @relation(fields: [messageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Complaints_Messages")
   complaintant  User              @relation("Complaints_ComplainantIdToUsers", fields: [complainantId], references: [id], onUpdate: NoAction, map: "FK_Complaints_Users_ComplaintantId")
@@ -61,10 +61,10 @@ model Message {
   id              String         @id(map: "PK_Messages") @db.UniqueIdentifier @default(uuid())
   senderId        String         @db.UniqueIdentifier
   text            String         @db.NVarChar(Max)
-  creationTime    DateTime       @db.DateTime
+  creationTime    DateTime       @db.DateTime @default(now())
   parentMessageId String?        @db.UniqueIdentifier
   messageType     Int            @db.SmallInt
-  isDeleted       Boolean
+  isDeleted       Boolean        @default(false)
   complaints      Complaint[]
   directMessage   DirectMessage?
   topicMessage    TopicMessage?
@@ -107,7 +107,7 @@ model Penalty {
   typeId         Int         @db.SmallInt
   startTime      DateTime    @db.DateTime
   endTime        DateTime    @db.DateTime
-  creationTime   DateTime    @db.DateTime
+  creationTime   DateTime    @db.DateTime @default(now())
   type           PenaltyType @relation(fields: [typeId], references: [id], onUpdate: NoAction, map: "FK_Penalties_PenaltyTypes")
   executor       User        @relation("Penalties_ExecutorIdToUsers", fields: [executorId], references: [id], onUpdate: NoAction, map: "FK_Penalties_Users_ExecutorId")
   punishedUser   User        @relation("Penalties_PunishedUserIdToUsers", fields: [punishedUserId], references: [id], onUpdate: NoAction, map: "FK_Penalties_Users_PunishedUserId")
@@ -165,7 +165,7 @@ model Topic {
   name          String         @db.NVarChar(256)
   sectionId     Int
   authorId      String         @db.UniqueIdentifier
-  creationTime  DateTime       @db.DateTime
+  creationTime  DateTime       @db.DateTime @default(now())
   isImportant   Boolean
   closingTime   DateTime?      @db.DateTime
   topicMessages TopicMessage[]

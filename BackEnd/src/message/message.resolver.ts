@@ -48,5 +48,4 @@ export class MessageResolver {
     ) {
         return this.messageService.deleteMessage(userId, messageId);
     }
-
 }

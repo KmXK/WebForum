@@ -25,6 +25,7 @@ const GET_SECTION = gql(`
             topics {
                 id
                 name
+                creationTime
                 author {
                     id
                     login
@@ -40,7 +41,8 @@ const SectionScreen = () => {
     const {data, loading, error} = useQuery(GET_SECTION, {
         variables: {
             id: +(sectionId || 0)
-        }
+        },
+        fetchPolicy: 'network-only'
     });
 
     if (loading) {
@@ -55,6 +57,17 @@ const SectionScreen = () => {
 
     return (
         <div>
+            <Box
+                sx={ {
+                    textAlign: 'center',
+                    marginBottom: 1
+                } }
+            >
+                <h1>
+                    { section.name }
+                </h1>
+            </Box>
+
             { section.children.length > 0 && (
                 <>
                     <h2>Sections:</h2>
@@ -96,7 +109,28 @@ const SectionScreen = () => {
                         justifyContent: 'center'
                     } }
                 >
-                    <h2>This topic is empty.</h2>
+                    <Box
+                        sx={ {
+                            display: 'flex',
+                            flexDirection: 'column'
+                        } }
+                    >
+                        <h2>
+                            This section is empty. </h2>
+                        <Link
+                            to={ 'new' }
+                            style={ {
+                                textDecoration: 'none',
+                                display: 'flex',
+                                width: '100%',
+                                justifyContent: 'center'
+                            } }
+                        >
+                            <Button>
+                                ADD NEW TOPIC
+                            </Button>
+                        </Link>
+                    </Box>
                 </Box>
             ) }
         </div>

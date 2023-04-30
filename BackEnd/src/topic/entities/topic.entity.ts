@@ -10,6 +10,9 @@ export class Topic {
     @Field()
     name: string;
 
+    @Field()
+    creationTime: string;
+
     authorId: string;
 
     @Field(() => User)
