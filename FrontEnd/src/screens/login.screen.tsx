@@ -1,7 +1,7 @@
 import { Button, Paper, styled, TextField, Typography } from '@mui/material';
-import { observer } from 'mobx-react-lite';
 import { useContext, useState } from 'react';
 import { Context } from '../global.context';
+import { observer } from 'mobx-react-lite';
 
 type Props = {};
 
