@@ -11,8 +11,8 @@ export class Section {
     @Field()
     name: string;
 
-    @Field(() => Int)
-    creationTime: number;
+    @Field()
+    creationTime: string;
 
     @Field(() => String, {nullable: true})
     description?: string;

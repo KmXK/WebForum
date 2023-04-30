@@ -1,9 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import SectionList from '../components/section/section-list.component';
 import { useQuery } from '@apollo/client';
 import LoaderComponent from '../components/common/loader.component';
 import { gql } from '../__generated__';
 import { SectionListItem } from '../models/section/section-list-item.model';
+import SectionListHeader from '../components/section/section-list-header.component';
 
 const GET_SECTIONS = gql(`
     #graphql
@@ -11,6 +12,7 @@ const GET_SECTIONS = gql(`
         sections {
             id
             name
+            description
             author {
                 id
                 login
@@ -23,11 +25,15 @@ const GET_SECTIONS = gql(`
 `);
 
 const SectionListScreen = () => {
-    const {data: plainSections, loading} = useQuery(GET_SECTIONS);
+    const {data: plainSections, loading} = useQuery(GET_SECTIONS, {
+        fetchPolicy: 'network-only'
+    });
 
-    const sections = useMemo(() => {
+    const [sections, setSections] = useState<SectionListItem[]>([]);
+
+    useEffect(() => {
         if (plainSections === undefined) {
-            return [];
+            return;
         }
 
         const sectionMap = plainSections.sections.reduce((result, section) => {
@@ -48,8 +54,8 @@ const SectionListScreen = () => {
             delete section.childrenIds;
         });
 
-        return Object.values(sectionMap).filter(s => !s.hasParent);
-    }, [plainSections]);
+        setSections(Object.values(sectionMap).filter(s => !s.hasParent));
+    }, [loading]);
 
     if (loading) {
         return <LoaderComponent/>;
@@ -57,7 +63,11 @@ const SectionListScreen = () => {
 
     return (
         <div>
-            <h2>Sections:</h2>
+            <SectionListHeader
+                onSectionAdded={ section =>
+                    setSections([...sections, section])
+                }
+            />
             <SectionList sections={ sections }/>
         </div>
     );

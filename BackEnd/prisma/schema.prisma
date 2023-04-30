@@ -125,11 +125,11 @@ model PenaltyType {
 }
 
 model Section {
-  id              Int       @id(map: "PK_Sections")
+  id              Int       @id(map: "PK_Sections") @default(autoincrement())
   name            String    @db.NVarChar(256)
   authorId        String    @db.UniqueIdentifier
   parentSectionId Int?
-  creationTime    DateTime  @db.DateTime
+  creationTime    DateTime  @db.DateTime @default(now())
   description     String?   @db.NVarChar(Max)
   parentSection   Section?  @relation("SectionsToSections", fields: [parentSectionId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Sections_Sections_ParentSectionId")
   childSections   Section[] @relation("SectionsToSections")

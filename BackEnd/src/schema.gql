@@ -36,7 +36,7 @@ type Topic {
 type Section {
   id: Int!
   name: String!
-  creationTime: Int!
+  creationTime: String!
   description: String
   topics: [Topic!]!
   children: [Section!]!
@@ -56,8 +56,15 @@ type Query {
 }
 
 type Mutation {
+  createSection(input: CreateSectionInput!): Section!
   createMessage(createMessage: CreateMessageInput!): Message!
   deleteMessage(messageId: String!): Message!
+}
+
+input CreateSectionInput {
+  name: String!
+  description: String!
+  parentSectionId: Int
 }
 
 input CreateMessageInput {

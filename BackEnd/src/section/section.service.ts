@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '@common/prisma';
 import { ServiceBase } from '@common/ServiceBase';
+import { CreateSectionInput } from './dto/create-section.input';
+import { RoleType } from '@shared/enums';
 
 @Injectable()
 export class SectionService extends ServiceBase {
@@ -38,11 +40,32 @@ export class SectionService extends ServiceBase {
         );
     }
 
+    async createSection(userId: string, input: CreateSectionInput) {
+        const user = await this.prismaService.user.findUnique({
+            where: {
+                id: userId
+            }
+        });
+
+        if (user === null || user.roleId !== RoleType.ADMIN) {
+            throw new ForbiddenException('You cannot create section');
+        }
+
+        return this.prismaService.section.create({
+            data: {
+                name: input.name,
+                description: input.description,
+                authorId: userId,
+                parentSectionId: input.parentSectionId
+            }
+        })
+    }
+
     protected mapElement(section: any) {
         return {
             id: section.id,
             name: section.name,
-            creationTime: +section.creationTime,
+            creationTime: (+section.creationTime).toString(),
             description: section.description || undefined
         };
     }

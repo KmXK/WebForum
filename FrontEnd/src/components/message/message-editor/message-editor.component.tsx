@@ -60,9 +60,7 @@ const MessageEditor: FC<Props> = ({topicId, onMessageAdded}) => {
     const [isSending, setIsSending] = useState(false);
 
     const [createMessage, {
-        data: createdMessage,
         loading: creationLoading,
-        error: creationError
     }] = useMutation<CreatedMessage>(CREATE_MESSAGE);
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {

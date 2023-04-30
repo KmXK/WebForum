@@ -1,10 +1,11 @@
 import React from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import Loader from '../components/common/loader.component';
 import SectionList from '../components/section/section-list.component';
 import TopicList from '../components/topic/topic-list/topic-list.component';
 import { useQuery } from '@apollo/client';
 import { gql } from '../__generated__';
+import { Box, Button } from '@mui/material';
 
 const GET_SECTION = gql(`
     #graphql
@@ -63,11 +64,41 @@ const SectionScreen = () => {
 
             { section.topics.length > 0 && (
                 <>
-                    <h2>Topics:</h2>
+                    <Box
+                        sx={ {
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            height: 50
+                        } }
+                    >
+                        <h2>Topics:</h2>
+                        <Link
+                            to={ 'new' }
+                            style={ {
+                                textDecoration: 'none'
+                            } }
+                        >
+                            <Button>
+                                ADD NEW TOPIC
+                            </Button>
+                        </Link>
+                    </Box>
+
                     <TopicList topics={ section.topics }/>
                 </>
             ) }
 
+            { section.topics.length === 0 && section.children.length === 0 && (
+                <Box
+                    sx={ {
+                        display: 'flex',
+                        justifyContent: 'center'
+                    } }
+                >
+                    <h2>This topic is empty.</h2>
+                </Box>
+            ) }
         </div>
     );
 };
