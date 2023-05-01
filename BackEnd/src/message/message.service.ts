@@ -145,7 +145,6 @@ export class MessageService extends ServiceBase {
             }
         });
 
-        console.log(deletedMessage);
         this.socketService.updateMessage(message.id, message.topicId);
 
         return this.map(deletedMessage);

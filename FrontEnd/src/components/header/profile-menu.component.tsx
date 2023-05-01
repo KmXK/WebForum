@@ -20,7 +20,6 @@ function MainProfileMenu() {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    console.log(user?.login);
 
     return (
         <>

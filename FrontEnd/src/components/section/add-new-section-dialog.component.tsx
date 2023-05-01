@@ -21,9 +21,10 @@ const ADD_NEW_SECTION = gql(`
 interface Props {
     open: boolean;
     onClose: (model?: SectionListItem) => void;
+    parentSectionId?: number;
 }
 
-const AddNewSectionDialog = ({open, onClose}: Props) => {
+const AddNewSectionDialog = ({open, onClose, parentSectionId}: Props) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [createSection] = useMutation(ADD_NEW_SECTION);
@@ -76,7 +77,8 @@ const AddNewSectionDialog = ({open, onClose}: Props) => {
                                 variables: {
                                     input: {
                                         name,
-                                        description
+                                        description,
+                                        parentSectionId
                                     }
                                 }
                             }).then(section => {

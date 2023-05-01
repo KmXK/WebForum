@@ -6,10 +6,11 @@ import { AuthUser } from '../../models/auth/auth-user.model';
 import useUser from '../../hooks/useUser.hook';
 
 interface Props {
+    parentSectionId?: number;
     onSectionAdded: (section: SectionListItem) => void;
 }
 
-const SectionListHeader = ({onSectionAdded}: Props) => {
+const SectionListHeader = ({onSectionAdded, parentSectionId}: Props) => {
     const [open, setOpen] = useState(false);
     const user: AuthUser = useUser()!;
 
@@ -33,6 +34,7 @@ const SectionListHeader = ({onSectionAdded}: Props) => {
                     </Button>
 
                     <AddNewSectionDialog
+                        parentSectionId={ parentSectionId }
                         open={ open }
                         onClose={ model => {
                             if (model) {

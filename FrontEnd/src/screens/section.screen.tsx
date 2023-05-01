@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import Loader from '../components/common/loader.component';
 import SectionList from '../components/section/section-list.component';
@@ -6,6 +6,8 @@ import TopicList from '../components/topic/topic-list/topic-list.component';
 import { useQuery } from '@apollo/client';
 import { gql } from '../__generated__';
 import { Box, Button } from '@mui/material';
+import SectionListHeader from '../components/section/section-list-header.component';
+import { SectionListItem } from '../models/section/section-list-item.model';
 
 const GET_SECTION = gql(`
     #graphql
@@ -38,12 +40,24 @@ const GET_SECTION = gql(`
 const SectionScreen = () => {
     const {sectionId} = useParams<{ sectionId: string }>();
 
+    const [childSections, setChildSections] = useState<SectionListItem[]>([]);
+
     const {data, loading, error} = useQuery(GET_SECTION, {
         variables: {
             id: +(sectionId || 0)
         },
         fetchPolicy: 'network-only'
     });
+
+    useEffect(() => {
+        if (data?.section.children) {
+            setChildSections(data?.section.children.map(s => ({...s, children: []})));
+        }
+    }, [loading]);
+
+    const handleAddSection = (section: SectionListItem) => {
+        setChildSections(childSections => [...childSections, section]);
+    }
 
     if (loading) {
         return <Loader/>;
@@ -68,12 +82,18 @@ const SectionScreen = () => {
                 </h1>
             </Box>
 
-            { section.children.length > 0 && (
-                <>
-                    <h2>Sections:</h2>
-                    <SectionList sections={ section.children.map(s => ({...s, children: []})) }/>
-                </>
-            ) }
+            <>
+                <SectionListHeader
+                    parentSectionId={ section.id }
+                    onSectionAdded={ s => handleAddSection(s) }
+                />
+                {
+                    childSections.length > 0
+                        ? <SectionList sections={ childSections }/>
+                        : <div>There are no child sections</div>
+                }
+
+            </>
 
             { section.topics.length > 0 && (
                 <>
