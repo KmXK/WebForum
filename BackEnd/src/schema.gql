@@ -58,6 +58,7 @@ type Query {
 type Mutation {
   createSection(input: CreateSectionInput!): Section!
   createTopic(createTopicInput: CreateTopicInput!): Topic!
+  updateUser(updateUserInput: UpdateUserInput!): User!
   createMessage(createMessage: CreateMessageInput!): Message!
   deleteMessage(messageId: String!): Message!
 }
@@ -73,6 +74,12 @@ input CreateTopicInput {
   sectionId: Int!
   isImportant: Boolean!
   messageText: String!
+}
+
+input UpdateUserInput {
+  login: String
+  firstName: String
+  lastName: String
 }
 
 input CreateMessageInput {

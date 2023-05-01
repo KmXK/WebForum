@@ -6,6 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PayloadDto } from './dto/payload.dto';
 import * as bcrypt from 'bcrypt';
 import { SignInDto } from './dto/signIn.dto';
+import { RoleType } from '@shared/enums';
 
 @Injectable()
 export class AuthService {
@@ -37,6 +38,38 @@ export class AuthService {
         if (!passwordsEquals) {
             throw new NotFoundException('Invalid login or password');
         }
+
+        const data = await this.generateTokens(user);
+
+        await this.setRefreshToken(user.id, data.refreshToken);
+
+        return data;
+    }
+
+    async register(registerDto: SignInDto) {
+        const existUser = await this.prismaService.user.findUnique({
+            where: {
+                login: registerDto.login
+            }
+        });
+
+        if (existUser !== null) {
+            throw new NotFoundException('User with such login already registered');
+        }
+
+        const {hash, salt} = this.passwordHashingPassword.hashPassword(registerDto.password);
+
+        const user = await this.prismaService.user.create({
+            data: {
+                login: registerDto.login,
+                passwordHash: hash,
+                passwordSalt: salt,
+                roleId: RoleType.USER
+            },
+            include: {
+                role: true
+            }
+        });
 
         const data = await this.generateTokens(user);
 
@@ -83,7 +116,8 @@ export class AuthService {
     private async generateTokens(user: User & { role: Role }) {
         const payload: PayloadDto = {
             userId: user.id,
-            role: user.role.name
+            role: user.role.name,
+            login: user.login
         };
 
         return {
@@ -106,5 +140,4 @@ export class AuthService {
             data: {refreshToken: refreshTokenHash}
         });
     }
-
 }

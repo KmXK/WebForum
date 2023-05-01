@@ -20,6 +20,16 @@ export class AuthController {
         return {accessToken, user: data};
     }
 
+    @Post('register')
+    async register(
+        @Body() userDto: SignInDto,
+        @Res({passthrough: true}) response: Response
+    ) {
+        const {accessToken, refreshToken, data} = await this.authService.register(userDto);
+        response.cookie('rt_jwt', refreshToken, {httpOnly: true});
+        return {accessToken, user: data};
+    }
+
     @UseGuards(AuthGuard)
     @Post('logout')
     async logout(

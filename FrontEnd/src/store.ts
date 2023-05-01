@@ -20,14 +20,16 @@ export default class Store {
         this.user = user;
     }
 
-    async login(email: string, password: string) {
+    async login(login: string, password: string): Promise<boolean> {
         try {
-            const response = await AuthService.login(email, password);
+            const response = await AuthService.login(login, password);
             localStorage.setItem('token', response.data.accessToken);
             this.setIsAuth(true);
             this.setUser(response.data.user);
+            return true;
         } catch (error: any) {
             console.log(error.response?.data?.message);
+            return false;
         }
     }
 
@@ -39,6 +41,19 @@ export default class Store {
             this.setUser(null);
         } catch (error: any) {
             console.log(error.response?.data?.message);
+        }
+    }
+
+    async register(login: string, password: string): Promise<boolean> {
+        try {
+            const response = await AuthService.register(login, password);
+            localStorage.setItem('token', response.data.accessToken);
+            this.setIsAuth(true);
+            this.setUser(response.data.user);
+            return true;
+        } catch (error: any) {
+            console.log(error.response?.data?.message);
+            return false;
         }
     }
 

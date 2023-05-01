@@ -1,12 +1,16 @@
 import React, { FC } from 'react';
 import { makeStyles } from '@mui/styles';
-import { TextField } from '@mui/material';
+import MarkdownEditor, { defaultCommands } from '@uiw/react-markdown-editor';
 
 const useStyles = makeStyles(() => ({
     textField: {
-        backgroundColor: 'white',
+        width: '100%',
+        height: '200px',
         marginTop: 30,
-        marginBottom: 2
+        marginBottom: 2,
+        '&:focus': {
+            outline: 'none'
+        }
     }
 }));
 
@@ -16,19 +20,25 @@ interface Props {
     label: string;
 }
 
-const MessageEditor: FC<Props> = ({text, onTextChanged, label}) => {
+const MessageEditor: FC<Props> = ({text, onTextChanged}) => {
     const classes = useStyles();
 
     return (
-        <TextField
+        <MarkdownEditor
             className={ classes.textField }
-            label={ label }
-            variant="outlined"
-            fullWidth
-            multiline={ true }
             value={ text }
-            onChange={ e => onTextChanged(e.target.value) }
+            onChange={ t => onTextChanged(t) }
+            toolbarsFilter={ (cmd, i) => i < 10 && cmd !== defaultCommands.fullscreen }
         />
+        // <TextField
+        //     className={ classes.textField }
+        //     label={ label }
+        //     variant="outlined"
+        //     fullWidth
+        //     multiline={ true }
+        //     value={ text }
+        //     onChange={ e => onTextChanged(e.target.value) }
+        // />
     );
 };
 

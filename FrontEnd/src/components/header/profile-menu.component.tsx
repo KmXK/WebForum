@@ -2,9 +2,13 @@ import { Avatar, Box, Divider, IconButton, ListItemIcon, Menu, MenuItem, Tooltip
 import { MouseEvent, useContext, useState } from 'react';
 import { Context } from '../../global.context';
 import { Logout } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import useUser from '../../hooks/useUser.hook';
 
 function MainProfileMenu() {
+    const user = useUser();
     const {store} = useContext(Context);
+    const navigate = useNavigate();
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -16,21 +20,25 @@ function MainProfileMenu() {
     const handleClose = () => {
         setAnchorEl(null);
     };
+    console.log(user?.login);
 
     return (
         <>
             <Box sx={ {display: 'flex', alignItems: 'center', textAlign: 'center'} }>
                 <Tooltip title="Account settings">
-                    <IconButton
-                        onClick={ handleClick }
-                        size="small"
-                        sx={ {ml: 2} }
-                        aria-controls={ open ? 'account-menu' : undefined }
-                        aria-haspopup="true"
-                        aria-expanded={ open ? 'true' : undefined }
-                    >
-                        <Avatar sx={ {width: 32, height: 32} }></Avatar>
-                    </IconButton>
+                    <>
+                        { user?.login }
+                        <IconButton
+                            onClick={ handleClick }
+                            size="small"
+                            sx={ {ml: 2} }
+                            aria-controls={ open ? 'account-menu' : undefined }
+                            aria-haspopup="true"
+                            aria-expanded={ open ? 'true' : undefined }
+                        >
+                            <Avatar sx={ {width: 32, height: 32} }></Avatar>
+                        </IconButton>
+                    </>
                 </Tooltip>
             </Box>
             <Menu
@@ -69,7 +77,12 @@ function MainProfileMenu() {
                 transformOrigin={ {horizontal: 'right', vertical: 'top'} }
                 anchorOrigin={ {horizontal: 'right', vertical: 'bottom'} }
             >
-                <MenuItem onClick={ handleClose }>
+                <MenuItem
+                    onClick={ () => {
+                        navigate('/profile');
+                        handleClose();
+                    } }
+                >
                     <Avatar/> Profile
                 </MenuItem>
                 <Divider/>
@@ -81,23 +94,6 @@ function MainProfileMenu() {
                 </MenuItem>
             </Menu>
         </>
-
-        // <Menu
-        //     id="demo-positioned-menu"
-        //     aria-labelledby="demo-positioned-button"
-        //     open={ open }
-        //     onClose={ () => setOpen(false) }
-        //     anchorOrigin={ {
-        //         vertical: 'top',
-        //         horizontal: 'right'
-        //     } }
-        //     transformOrigin={ {
-        //         vertical: 'top',
-        //         horizontal: 'right'
-        //     } }
-        // >
-        //     <MenuItem onClick={ () => store.logout() }>Logout</MenuItem>
-        // </Menu>
     );
 }
 

@@ -1,7 +1,8 @@
 import { createBrowserRouter, useLocation, useNavigate } from 'react-router-dom';
-import LoginPage from '../screens/login.screen';
+import LoginScreen from '../screens/login.screen';
 import React, { useEffect } from 'react';
 import { useReturnUrl } from '../contexts/return-url.context';
+import RegisterScreen from '../screens/register.screen';
 
 const RedirectPage = () => {
     const location = useLocation();
@@ -22,7 +23,11 @@ export const guestRouter = createBrowserRouter(
     [
         {
             path: '/login',
-            element: <LoginPage/>
+            element: <LoginScreen/>
+        },
+        {
+            path: '/register',
+            element: <RegisterScreen/>
         },
         {
             path: '*',

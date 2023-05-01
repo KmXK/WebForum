@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@common/prisma';
 import { ServiceBase } from '@common/ServiceBase';
+import { UpdateUserInput } from './dto/update-user.input';
+import { UserInputError } from '@nestjs/apollo';
 
 @Injectable()
 export class UserService extends ServiceBase {
@@ -43,6 +45,41 @@ export class UserService extends ServiceBase {
                     author: true
                 }
             }).author()
+        );
+    }
+
+    async update(userId: string, updateUserInput: UpdateUserInput) {
+        if (updateUserInput.firstName === undefined &&
+            updateUserInput.lastName === undefined &&
+            updateUserInput.login === undefined
+        ) {
+            return this.findOne(userId);
+        }
+
+        const user = await this.prismaService.user.findUnique({
+            where: {
+                login: updateUserInput.login
+            },
+            select: {
+                id: true
+            }
+        });
+
+        if (user !== null && user.id !== userId) {
+            throw new UserInputError('User with current login already exists');
+        }
+
+        return this.map(
+            await this.prismaService.user.update({
+                where: {
+                    id: userId
+                },
+                data: {
+                    login: updateUserInput.login,
+                    firstName: updateUserInput.firstName,
+                    lastName: updateUserInput.lastName
+                }
+            })
         );
     }
 

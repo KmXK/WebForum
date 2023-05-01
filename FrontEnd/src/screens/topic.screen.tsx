@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import Loader from '../components/common/loader.component';
 import TopicHeader from '../components/topic/header/topic-header.component';
 import MessageList from '../components/message/message-list/message-list.component';
 import MessageSubmitter from '../components/message/message-editor/message-submitter.component';
 import { MessageModel } from '../models/message/message.model';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { NavigateBefore } from '@mui/icons-material';
 import { gql } from '../__generated__';
 import { connectSocket, socket } from '../socket';
 
@@ -66,7 +65,7 @@ const TopicScreen = () => {
     const {topicId} = useParams<{ topicId: string }>();
 
     if (topicId === undefined) {
-        return <NavigateBefore/>
+        return <Navigate to={ '..' }/>
     }
 
     const {data, loading, error} = useQuery(GET_TOPIC, {
@@ -150,7 +149,7 @@ const TopicScreen = () => {
     }
 
     if (error) {
-        return <NavigateBefore/>;
+        return <Navigate to={ '..' }/>
     }
 
     const topic = data!.topic;

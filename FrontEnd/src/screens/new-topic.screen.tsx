@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import Center from '../components/common/center.component';
 import { Box, Button, TextField } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { gql } from '../__generated__';
 import { useMutation } from '@apollo/client';
-import { NavigateBefore } from '@mui/icons-material';
+import MessageEditor from '../components/message/message-editor/message-editor.component';
 
 const useStyles = makeStyles({
     textField: {
@@ -29,7 +29,7 @@ const NewTopicScreen = () => {
     const {sectionId} = useParams<{ sectionId: string }>();
 
     if (sectionId === undefined) {
-        return <NavigateBefore/>
+        return <Navigate to={ '..' }/>
     }
 
     const styles = useStyles();
@@ -89,12 +89,10 @@ const NewTopicScreen = () => {
                             onChange={ t => setData({...data, name: t.target.value}) }
                             aria-errormessage={ 'Text' }
                         />
-                        <TextField
-                            className={ styles.textField }
-                            multiline={ true }
+                        <MessageEditor
+                            text={ data.message }
+                            onTextChanged={ t => setData({...data, message: t}) }
                             label={ 'Message' }
-                            value={ data.message }
-                            onChange={ t => setData({...data, message: t.target.value}) }
                         />
 
                         { creatingInProcess ||

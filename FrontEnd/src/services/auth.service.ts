@@ -15,4 +15,13 @@ export default class AuthService {
     static async logout(): Promise<void> {
         return api.post('/api/auth/logout');
     }
+
+    static async register(login: string, password: string) {
+        return api.post<AuthResponseModel>(
+            '/api/auth/register', {
+                login,
+                password
+            }
+        );
+    }
 }
