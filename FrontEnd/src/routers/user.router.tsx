@@ -4,7 +4,7 @@ import SectionListScreen from '../screens/section-list.screen';
 import HomeScreen from '../screens/home.screen';
 import SectionScreen from '../screens/section.screen';
 import TopicScreen from '../screens/topic.screen';
-import NewSectionScreen from '../screens/new-section.screen';
+import NewTopicScreen from '../screens/new-topic.screen';
 
 export const userRouter = createBrowserRouter(
     [
@@ -28,7 +28,7 @@ export const userRouter = createBrowserRouter(
                     element: <SectionScreen/>
                 }, {
                     path: '/sections/:sectionId/new',
-                    element: <NewSectionScreen/>
+                    element: <NewTopicScreen/>
                 },
                 {
                     path: '/topics/:topicId',

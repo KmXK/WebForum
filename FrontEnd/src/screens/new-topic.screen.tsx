@@ -25,7 +25,7 @@ const CREATE_TOPIC = gql(`
     }
 `);
 
-const NewSectionScreen = () => {
+const NewTopicScreen = () => {
     const {sectionId} = useParams<{ sectionId: string }>();
 
     if (sectionId === undefined) {
@@ -45,7 +45,9 @@ const NewSectionScreen = () => {
 
     useEffect(() => {
         if (!creatingInProcess && createdTopicData) {
-            navigate(`/topics/${ createdTopicData.createTopic.id }`);
+            navigate(`/topics/${ createdTopicData.createTopic.id }`, {
+                replace: true
+            });
         }
     }, [creatingInProcess, createdTopicData]);
 
@@ -132,4 +134,4 @@ const NewSectionScreen = () => {
     );
 };
 
-export default NewSectionScreen;
+export default NewTopicScreen;
